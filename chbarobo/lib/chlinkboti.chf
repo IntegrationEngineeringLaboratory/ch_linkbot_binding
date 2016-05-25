@@ -1660,6 +1660,47 @@ void CLinkbotI::drivexyToFuncNB(double x0, double xf, int n, double (*func)(doub
 }
 /*END ROBOSIM COMPATIBILITY FUNCTIONS*/
 
+/* play  a sequence of notes only Ch*/
+/* playNotes */
+int CLinkbotI::playNotes(note_t song[], int numNotes, double speedFactor) {
+    
+    int iter = 0;
+    double duration;
+    while(iter < numNotes) {
+        duration = (1 / (double)song[iter].duration)/speedFactor;
+        setBuzzerFrequency(song[iter].frequency, duration);
+        iter++;
+    }
+    
+    return 0;
+}
+
+/* playNotesNB*/
+int CLinkbotI::playNotesNB(note_t song[], int numNotes, double speedFactor) {
+    
+    printf("Warning: function playNotesNB() not yet implemented in class CLinkbotI\n");
+    return 0;
+}
+
+/* play a premaed melody */
+int CLinkbotI::playMelody(note_t song(int), double speedFactor){
+    note_t note;
+    int iter = 0;
+    double duration;
+    
+    note = song(iter);
+
+    while(note.frequency != -1 && note.duration != -1) {
+        duration = (1 / (double)note.duration)/speedFactor;
+        setBuzzerFrequency(note.frequency, duration);
+        iter++;
+        note = song(iter);
+    }
+    return 0;
+}
+
+
+
 /*CLinkbotIGroup class */
 
 /* Constructor */
