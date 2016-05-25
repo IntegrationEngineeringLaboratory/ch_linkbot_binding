@@ -1662,8 +1662,8 @@ void CLinkbotI::drivexyToFuncNB(double x0, double xf, int n, double (*func)(doub
 
 /* play  a sequence of notes only Ch*/
 /* playNotes */
-int CLinkbotI::playNotes(note_t song[], int numNotes, double speedFactor) {
-    
+int CLinkbotI::playNotes(note_t song[:], double speedFactor) {
+    int numNotes = (int) shape(song);
     int iter = 0;
     double duration;
     while(iter < numNotes) {
@@ -1676,7 +1676,7 @@ int CLinkbotI::playNotes(note_t song[], int numNotes, double speedFactor) {
 }
 
 /* playNotesNB*/
-int CLinkbotI::playNotesNB(note_t song[], int numNotes, double speedFactor) {
+int CLinkbotI::playNotesNB(note_t song[:], double speedFactor) {
     
     printf("Warning: function playNotesNB() not yet implemented in class CLinkbotI\n");
     return 0;

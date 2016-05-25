@@ -11,7 +11,7 @@
 #endif
 #include<array.h>
 
-#include"pitches.h"
+#include<song.h>
 
 #ifndef ROBOT_RECORD_DATA_T
 #define ROBOT_RECORD_DATA_T
@@ -217,8 +217,8 @@ class CLinkbotI {
 		void traceOn(void);
 
 		/* MUSIC Ch-only */
-		int playNotes(note_t song[], int numNotes, double speedFactor);
-		int playNotesNB(note_t song[], int numNotes, double speedFactor);
+		int playNotes(note_t song[:], double speedFactor);
+		int playNotesNB(note_t song[:], double speedFactor);
 		int playMelody(note_t song(int), double speedFactor);
 
 
@@ -363,8 +363,8 @@ class CLinkbotL {
 		void traceOn(void);
 
 		/* MUSIC Ch-only */
-		int playNotes(note_t song[], int numNotes, double speedFactor);
-		int playNotesNB(note_t song[], int numNotes, double speedFactor);
+		int playNotes(note_t song[:], double speedFactor);
+		int playNotesNB(note_t song[:], double speedFactor);
 		int playMelody(note_t song(int), double speedFactor);
 
         LinkbotImpl *m;
@@ -542,5 +542,4 @@ int CLinkbotL::g_chlinkbot_dlcount=0;
 #pragma package <chbarobo>
 #pragma importf "chlinkboti.chf"
 #pragma importf "chlinkbotl.chf"
-#pragma importf "songs.chf"
 #endif

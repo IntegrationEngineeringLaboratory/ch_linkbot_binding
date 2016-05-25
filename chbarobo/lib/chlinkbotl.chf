@@ -1277,8 +1277,8 @@ void CLinkbotL::recordxyEnd(int &num)
 
 /* play  a sequence of notes only Ch*/
 /* playNotes */
-int CLinkbotL::playNotes(note_t song[], int numNotes, double speedFactor) {
-    
+int CLinkbotL::playNotes(note_t song[:], double speedFactor) {
+    int numNotes = (int) shape(song);
     int iter = 0;
     double duration;
     while(iter < numNotes) {
@@ -1291,7 +1291,7 @@ int CLinkbotL::playNotes(note_t song[], int numNotes, double speedFactor) {
 }
 
 /* playNotesNB*/
-int CLinkbotL::playNotesNB(note_t song[], int numNotes, double speedFactor) {
+int CLinkbotL::playNotesNB(note_t song[:], double speedFactor) {
     
     printf("Warning: function playNotesNB() not yet implemented in class CLinkbotL\n");
     return 0;
