@@ -6,13 +6,13 @@
 #endif
 
 #include <iostream>
-#include "linkbot_wrapper.hpp"
 
 int main(int argc, char *argv[]) {
     if(argc != 2) {
         std::cout << "Usage: " << argv[0] << " <serial_id>"<<std::endl;
         return 0;
     }
+#if 0
 
     Linkbot *l = new Linkbot();
     l->connectWithSerialID(argv[1]);
@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
 	l->setJointSafetyAngle(angle);
 
 	l->getJointSafetyAngle(angle1);
+#endif
     /*l->move(90, 90, 90);
     l->move(-90, -90, -90);
     */

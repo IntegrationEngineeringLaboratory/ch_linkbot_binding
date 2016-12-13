@@ -6,9 +6,10 @@
 #endif
 
 #include <iostream>
-#include "linkbot_wrapper.hpp"
+//#include "linkbot_wrapper.hpp"
 
 int main(int argc, char *argv[]) {
+#if 0
     if(argc != 2) {
         std::cout << "Usage: " << argv[0] << " <serial_id>"<<std::endl;
         return 0;
@@ -26,5 +27,6 @@ int main(int argc, char *argv[]) {
     for(double p = -1; p < 1.0; p += 0.01) {
         l->setJointPower(ROBOT_JOINT1, p);
     }
+#endif
     return 0;
 }

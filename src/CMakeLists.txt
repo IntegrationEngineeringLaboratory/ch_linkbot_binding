@@ -12,8 +12,6 @@ if(NOT DEFINED CH_ROOT)
 endif()
 message(STATUS "Using Ch at ${CH_ROOT}")
 
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.54.0 REQUIRED COMPONENTS system log filesystem thread)
 find_package(Threads)
 
 # In order to test the C++ wrapper easily, make two targets: a static
@@ -21,8 +19,6 @@ find_package(Threads)
 # target which only contains the Ch entry functions and links to the wrapper.
 
 set(WRAPPER_SOURCES
-    linkbot_group.cpp
-    linkbot_wrapper.cpp 
     rgbhashtable.c.cpp
     )
 
@@ -30,18 +26,23 @@ add_library(linkbot_wrapper STATIC ${WRAPPER_SOURCES})
 set_property(TARGET linkbot_wrapper PROPERTY CXX_STANDARD 11)
 set_property(TARGET linkbot_wrapper PROPERTY CXX_STANDARD_REQUIRED ON)
 
+find_library(LINKBOT linkbot PATHS /lib)
+
 target_include_directories(linkbot_wrapper PRIVATE ${Boost_INCLUDE_DIRS})
 target_link_libraries(linkbot_wrapper PUBLIC
-    baromesh
+    ${LINKBOT}
     Threads::Threads
     ${Boost_LIBRARIES})
 
 set(SOURCES
+    chlinkbot_chdl.cpp
     chlinkboti_chdl.cpp
     chlinkbotl_chdl.cpp
     )
 
 add_library(chlinkbot MODULE ${SOURCES})
+set_property(TARGET chlinkbot PROPERTY CXX_STANDARD 11)
+set_property(TARGET chlinkbot PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # We want the library to be named liblinkbot.dl, not chlinkbot.dll.
 set_target_properties(chlinkbot PROPERTIES PREFIX lib SUFFIX .dl OUTPUT_NAME linkbot)
@@ -53,6 +54,7 @@ endif()
 target_include_directories(chlinkbot
     PRIVATE
             ${CH_ROOT}/extern/include
+            /include
     )
 
 if(WIN32)

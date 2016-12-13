@@ -6,9 +6,10 @@
 #endif
 
 #include <iostream>
-#include "linkbot_wrapper.hpp"
+//#include "linkbot_wrapper.hpp"
 
 int main(int argc, char *argv[]) {
+#if 0
     if(argc != 2) {
         std::cout << "Usage: " << argv[0] << " <serial_id>"<<std::endl;
         return 0;
@@ -51,6 +52,6 @@ int main(int argc, char *argv[]) {
             arg[0] << " " <<
             arg[1] << " " <<
             arg[2] << " " << std::endl;
-
+#endif
     return 0;
 }
