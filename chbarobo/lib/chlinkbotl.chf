@@ -1277,6 +1277,7 @@ void CLinkbotL::recordxyEnd(int &num)
 
 /* play  a sequence of notes only Ch*/
 /* playNotes */
+#if 0
 int CLinkbotL::playNotes(note_t song[:], double speedFactor) {
     int numNotes = (int) shape(song);
     int iter = 0;
@@ -1313,7 +1314,7 @@ int CLinkbotL::playMelody(note_t song(int), double speedFactor){
     }
     return 0;
 }
-
+#endif
 
 
 /*CLinkbotLGroup class */
