@@ -1,0 +1,731 @@
+#include "linkbot_wrapper.h"
+#include "rgbhashtable.h"
+#include "robot_position_recorder.h"
+#include "robotAction.hpp"
+#include "robot_utilities.hpp"
+
+#include <cmath>
+#include <thread>
+
+#ifdef _WIN32
+#include <windows.h>
+#elif defined __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#include <unistd.h>
+#else
+#include <unistd.h>
+#endif
+
+#define callLinkbotFunction(func, ...) \
+  _linkbot->func(__VA_ARGS__);
+
+#define callLinkbotIOnlyFunction(func, ...) \
+  LinkbotFormFactor type; \
+  _linkbot->getFormFactor(type); \
+  if(type == LINKBOT_FORM_FACTOR_L) return; \
+  barobo::CLinkbotI * linkboti = (barobo::CLinkbotI *) _linkbot; \
+  linkboti->func(__VA_ARGS__);
+  
+#define callLinkbotLOnlyFunction(func, ...) \
+  LinkbotFormFactor type; \
+  _linkbot->getFormFactor(type); \
+  if(type == LINKBOT_FORM_FACTOR_I) return; \
+  barobo::CLinkbotI * linkboti = (barobo::CLinkbotI *) _linkbot; \
+  linkboti->func(__VA_ARGS__);
+
+LinkbotWrapper * newLinkbotIWrapper(const char * serialId)
+{
+  LinkbotFormFactor type;
+  barobo::CLinkbot * l = new barobo::CLinkbotI(serialId);
+
+  if(l == NULL) {
+    printf("newLinkbotIWrapper(): null pointer!\n");
+    exit(-1);
+  }
+
+  l->getFormFactor(type);
+  if(type == LINKBOT_FORM_FACTOR_L) {
+    printf("A Linkbot-L is connected, not a Linkbot-I.\nPlease connect a Linbot-I.\nExiting..\n");
+    exit(-1);
+  }
+
+  return new LinkbotWrapper(l);
+}
+
+LinkbotWrapper * newLinkbotLWrapper(const char * serialId)
+{
+  LinkbotFormFactor type;
+  barobo::CLinkbot * l = new barobo::CLinkbotI(serialId);
+
+  if(l == NULL) {
+    printf("newLinkbotLWrapper(): null pointer!\n");
+    exit(-1);
+  }
+
+  l->getFormFactor(type);
+  if(type == LINKBOT_FORM_FACTOR_I) {
+    printf("A Linkbot-I is connected, not a Linkbot-L.\nPlease connect a Linbot-L.\nExiting..\n");
+    exit(-1);
+  }
+
+  return new LinkbotWrapper(l);
+}
+
+LinkbotJoint linkbotJoint(robotJointId_t id)
+{
+  return LinkbotJoint(id);
+}
+
+LinkbotDirection linkbotDirection(linkbot::Direction dir)
+{
+  return LinkbotDirection(dir);
+}
+
+/*
+ * C Functions for multi-threads
+ */
+void robotDrivePolarImp(LinkbotWrapper *l, double angle, double distance, double radius, double trackwidth, cstem::RobotAction *action = NULL)
+{
+#ifdef DEBUG
+  fprintf(stdout, "angle = %lf\n", angle);
+#endif
+
+  if(l) {
+    if(angle < 0) {
+      l->turnRight(-angle, radius, trackwidth);
+    } else {
+      l->turnLeft(angle, radius, trackwidth);
+    }
+
+    l->driveDistance(distance, radius);
+  }
+
+  if(action) action->stop();
+}
+
+void robotDrivexyToImp(LinkbotWrapper *l, double x, double y, double radius, double trackwidth, cstem::RobotAction *action=NULL)
+{
+  double x0, y0, angle0;
+
+  if(l) {
+    l->getPosition(x0, y0, angle0);
+
+    double angle, distance;
+    cstem::getDriveInfoByAbsolutePosition(x0, y0, angle0, x, y, angle, distance);
+
+    /* drive robot using drivexy function */
+    robotDrivePolarImp(l, angle, distance, radius, trackwidth);
+  }
+
+  if(action) action->stop();
+}
+
+void robotDrivexyToArrayImp(LinkbotWrapper *l, double *px, double *py, int num, double radius, double trackwidth, cstem::RobotAction *action=NULL)
+{
+  if(l) {
+    for(int i=0; i<num; i++) {
+      robotDrivexyToImp(l, px[i], py[i], radius, trackwidth);
+    }
+  }
+
+  if(action) action->stop();
+}
+
+void robotPlayNotesImp(LinkbotWrapper *l, int *frequency, double *duration, int num, cstem::RobotAction *action=NULL)
+{
+  if(l) {
+    for(int i=0; i<num; i++) {
+      l->setBuzzerFrequency(frequency[i], duration[i]);
+    }
+  }
+
+  if(action) action->stop();
+}
+
+/*
+ * LinkbotWrapper Implementation
+ */
+LinkbotWrapper::LinkbotWrapper(barobo::CLinkbot * linkbot)
+: _linkbot(linkbot)
+{
+}
+
+LinkbotWrapper::~LinkbotWrapper()
+{
+  if(_linkbot) delete _linkbot;
+}
+
+void LinkbotWrapper::moveForeverNB()
+{
+  callLinkbotFunction(
+      setMovementStateNB, 
+      linkbotDirection(linkbot::POSITIVE), 
+      linkbotDirection(linkbot::POSITIVE), 
+      linkbotDirection(linkbot::NEGATIVE)
+      );
+}
+
+void LinkbotWrapper::moveJoint(robotJointId_t id, double angle)
+{
+  moveJointNB(id, angle);
+  moveJointWait(id);
+}
+
+void LinkbotWrapper::moveJointNB(robotJointId_t id, double angle)
+{
+  double speed;
+  getJointSpeed(id, speed);
+
+  if (speed < 0) {
+    angle = -angle;
+  }
+  
+  callLinkbotFunction(moveJointNB, linkbotJoint(id), angle);
+}
+
+void LinkbotWrapper::moveJointTo(robotJointId_t id, double angle)
+{
+    moveJointToNB(id, angle);
+    moveWait();
+}
+
+void LinkbotWrapper::moveJointToNB(robotJointId_t id, double angle)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveJointForeverNB(robotJointId_t id)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveJointTime(robotJointId_t id, double time)
+{
+  moveJointTimeNB(id, time);
+  moveJointWait(id);
+}
+
+void LinkbotWrapper::moveJointTimeNB(robotJointId_t id, double time)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveJointWait(robotJointId_t id)
+{
+  _linkbot->moveJointWait(linkbotJoint(id));
+}
+
+void LinkbotWrapper::move(double j1, double j2, double j3)
+{
+  callLinkbotFunction(move, j1, j2, j3);
+}
+
+void LinkbotWrapper::moveNB(double j1, double j2, double j3)
+{
+  callLinkbotFunction(moveNB, j1, j2, j3);
+}
+
+void LinkbotWrapper::moveWait(int mask)
+{
+  callLinkbotFunction(moveWait, mask);
+}
+
+void LinkbotWrapper::moveTo(double angle1, double angle2, double angle3)
+{
+  callLinkbotFunction(moveTo, angle1, angle2, angle3);
+}
+
+void LinkbotWrapper::moveToNB(double angle1, double angle2, double angle3)
+{
+  callLinkbotFunction(moveToNB, angle1, angle2, angle3);
+}
+
+void LinkbotWrapper::moveJointToByTrackPos(robotJointId_t id, double angle)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveJointToByTrackPosNB(robotJointId_t id, double angle)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveToByTrackPos(double angle1, double angle2, double angle3)
+{
+  moveToByTrackPosNB(angle1, angle2, angle3);
+  moveWait();
+}
+
+void LinkbotWrapper::moveToByTrackPosNB(double angle1, double angle2, double angle3)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveToZero()
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveToZeroNB()
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveTime(double time)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::moveTimeNB(double time)
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::resetToZero()
+{
+  callLinkbotFunction(resetToZero);
+}
+
+void LinkbotWrapper::resetToZeroNB()
+{
+  callLinkbotFunction(resetToZeroNB);
+}
+
+void LinkbotWrapper::stop()
+{
+  callLinkbotFunction(stop);
+}
+
+void LinkbotWrapper::driveAngle(double angle)
+{
+  callLinkbotIOnlyFunction(driveAngle, angle);
+}
+
+void LinkbotWrapper::driveAngleNB(double angle)
+{
+  callLinkbotIOnlyFunction(driveAngleNB, angle);
+}
+
+void LinkbotWrapper::driveDistance(double distance, double radius)
+{
+  callLinkbotIOnlyFunction(driveDistance, distance, radius);
+}
+
+void LinkbotWrapper::driveDistanceNB(double distance, double radius)
+{
+  callLinkbotIOnlyFunction(driveDistanceNB, distance, radius);
+}
+
+void LinkbotWrapper::driveForeverNB()
+{
+  callLinkbotIOnlyFunction(driveForeverNB);
+}
+
+void LinkbotWrapper::driveTime(double time)
+{
+  callLinkbotIOnlyFunction(driveTime, time);
+}
+
+void LinkbotWrapper::driveTimeNB(double time)
+{
+  callLinkbotIOnlyFunction(driveTimeNB, time);
+}
+
+void LinkbotWrapper::turnLeft(double angle, double radius, double tracklength)
+{
+  callLinkbotIOnlyFunction(turnLeft, angle, radius, tracklength);
+}
+
+void LinkbotWrapper::turnLeftNB(double angle, double radius, double tracklength)
+{
+  callLinkbotIOnlyFunction(turnLeftNB, angle, radius, tracklength);
+}
+
+void LinkbotWrapper::turnRight(double angle, double radius, double tracklength)
+{
+  callLinkbotIOnlyFunction(turnRight, angle, radius, tracklength);
+}
+
+void LinkbotWrapper::turnRightNB(double angle, double radius, double tracklength)
+{
+  callLinkbotIOnlyFunction(turnRightNB, angle, radius, tracklength);
+}
+
+void LinkbotWrapper::openGripper(double angle)
+{
+  move(-angle/2.0, 0, -angle/2.0);
+}
+
+void LinkbotWrapper::openGripperNB(double angle)
+{
+  moveNB(-angle/2.0, 0, -angle/2.0);  
+}
+
+void LinkbotWrapper::closeGripper()
+{
+  /* TODO */
+}
+
+void LinkbotWrapper::closeGripperNB()
+{
+}
+
+void LinkbotWrapper::drivePolar(
+    double angle, 
+    double distance, 
+    double radius, 
+    double trackwidth, 
+    bool NB)
+{
+  if(NB) {
+    _drivexyAction->start();
+    std::thread driveThread(robotDrivePolarImp, this, angle, distance, radius, trackwidth, _drivexyAction);
+    driveThread.detach();
+  } else {
+    robotDrivePolarImp(this, angle, distance, radius, trackwidth, _drivexyAction);
+  }
+}
+
+void LinkbotWrapper::drivexy(
+    double x, 
+    double y, 
+    double radius, 
+    double trackwidth, 
+    bool NB)
+{
+  double angle, distance;
+  cstem::getDriveInfoByRelativePosition(x, y, angle, distance);
+
+  drivePolar(angle, distance, radius, trackwidth, NB);
+}
+
+void LinkbotWrapper::drivexyTo(
+    double x, 
+    double y, 
+    double radius, 
+    double trackwidth, 
+    bool NB)
+{
+  if(NB) {
+    _drivexyAction->start();
+    std::thread driveThread(robotDrivexyToImp, this, x, y, radius, trackwidth, _drivexyAction);
+    driveThread.detach();
+  } else {
+    robotDrivexyToImp(this, x, y, radius, trackwidth, _drivexyAction);
+  }
+}
+
+void LinkbotWrapper::drivexyToArray(
+    double *px, 
+    double *py, 
+    int num, 
+    double radius, 
+    double trackwidth, 
+    bool NB)
+{
+  if(NB) {
+    _drivexyAction->start();
+    std::thread driveThread(robotDrivexyToArrayImp, this, px, py, num, radius, trackwidth, _drivexyAction);
+    driveThread.detach();
+  } else {
+    robotDrivexyToArrayImp(this, px, py, num, radius, trackwidth, _drivexyAction);
+  }
+}
+
+void LinkbotWrapper::drivexyWait()
+{
+  while(_drivexyAction->isRunning()) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(int(200)));
+  }
+}
+
+void LinkbotWrapper::holdJoint(robotJointId_t id)
+{
+}
+
+void LinkbotWrapper::holdJoints()
+{
+}
+
+void LinkbotWrapper::holdJointsAtExit()
+{
+}
+
+void LinkbotWrapper::relaxJoint(robotJointId_t id)
+{
+}
+
+void LinkbotWrapper::relaxJoints()
+{
+}
+
+/* SETTERS */
+void LinkbotWrapper::setJointSpeed(robotJointId_t id, double speed)
+{
+  _linkbot->setJointSpeed(linkbotJoint(id), speed);
+}
+
+void LinkbotWrapper::setJointSpeeds(double speed1, double speed2, double speed3)
+{
+  _linkbot->setJointSpeeds(speed1, speed2, speed3);
+}
+
+void LinkbotWrapper::setJointSpeedRatio(robotJointId_t id, double ratio)
+{
+  _linkbot->setJointSpeedRatio(linkbotJoint(id), ratio);
+}
+
+void LinkbotWrapper::setJointSpeedRatios(double ratio1, double ratio2, double ratio3)
+{
+  _linkbot->setJointSpeedRatios(ratio1, ratio2, ratio3);
+}
+
+void LinkbotWrapper::setSpeed(double speed, double radius)
+{
+  double omega;
+  omega = speed/radius; // in rad/s
+  omega = (omega*180.0)/M_PI; // in deg/s
+  if (omega > 200) {
+    std::cout << "Warning: cannot set joint speeds to "
+              << omega << " degrees/second." << std::endl;
+    std::cout << "It is beyond the limit of 200 degrees/second. "
+              << "Joints speeds will be set to 200 degrees/second."
+              <<std::endl;
+    omega = 200.0;
+  }
+  else if (omega < -200){
+    std::cout << "Warning: cannot set joint speeds to " 
+              << omega << " degrees/second." << std::endl;
+    std::cout << "It is beyond the limit of -200 degrees/second. "
+              << "Joints speeds will be set to -200 degrees/second." 
+              << std::endl;
+    omega = -200.0;
+  }
+  setJointSpeeds(omega, 0, omega);
+}
+
+void LinkbotWrapper::setBuzzerFrequencyOn(int frequency)
+{
+  callLinkbotFunction(setBuzzerFrequencyOn, frequency);
+}
+
+void LinkbotWrapper::setBuzzerFrequencyOff()
+{
+  callLinkbotFunction(setBuzzerFrequencyOff);
+}
+
+void LinkbotWrapper::setBuzzerFrequency(int frequency, double time)
+{
+  callLinkbotFunction(setBuzzerFrequency, frequency, time);
+}
+
+void LinkbotWrapper::setLEDColorRGB(int r, int g, int b)
+{
+  callLinkbotFunction(setLEDColorRGB, r, g, b);
+}
+
+void LinkbotWrapper::setLEDColor(char *color)
+{
+  int htRetval;
+  int getRGB[3];
+  rgbHashTable * rgbTable = HT_Create();
+
+  htRetval = HT_Get(rgbTable, color, getRGB);
+  HT_Destroy(rgbTable);
+
+  setLEDColorRGB(getRGB[0], getRGB[1], getRGB[2]);
+}
+
+void LinkbotWrapper::setJointPower(robotJointId_t id, double power)
+{
+  callLinkbotFunction(setJointPower, linkbotJoint(id), power);
+}
+
+void LinkbotWrapper::setMotorPowers(double p1, double p2, double p3)
+{
+  callLinkbotFunction(setMotorPowers, p1, p2, p3);
+}
+
+/* GETTERS */
+void LinkbotWrapper::getJointAngle(robotJointId_t id, double &angle)
+{
+  double angles[3];
+  static int numReadings = 10;
+
+  angle = 0;
+  for (int i=0; i<numReadings; i++)
+  {
+    getJointAnglesInstant(angles[0], angles[1], angles[2]);
+    angle += angles[int(id)-1];
+  }
+  angle = angle/numReadings;
+}
+
+void LinkbotWrapper::getJointAngles(double &angle1, double &angle2, double &angle3)
+{
+  double angles[3];
+  static int numReadings = 10;
+
+  angle1 = 0;
+  angle2 = 0;
+  angle3 = 0;
+  for (int i=0; i<numReadings; i++)
+  {
+    getJointAnglesInstant(angles[0], angles[1], angles[2]);
+    angle1 += angles[0];
+    angle2 += angles[1];
+    angle3 += angles[2];
+  }
+  angle1 = angle1/numReadings;
+  angle2 = angle2/numReadings;
+  angle3 = angle3/numReadings;
+}
+
+void LinkbotWrapper::getJointAngleInstant(robotJointId_t id, double &angle)
+{
+  double angles[3];
+  getJointAnglesInstant(angles[0], angles[1], angles[2]);
+  angle = angles[int(id)-1];
+}
+
+void LinkbotWrapper::getJointAnglesInstant(double &angle1, double &angle2, double &angle3)
+{
+  _linkbot->getJointAngles(angle1, angle2, angle3);
+}
+
+void LinkbotWrapper::getJointSpeed(robotJointId_t id, double &speed)
+{
+  _linkbot->getJointSpeed(linkbotJoint(id), speed);
+}
+
+void LinkbotWrapper::getJointSpeedRatio(robotJointId_t id, double &ratio)
+{
+  _linkbot->getJointSpeedRatio(linkbotJoint(id), ratio);
+}
+
+void LinkbotWrapper::getJointSpeeds(double &speed1, double &speed2, double &speed3)
+{
+  _linkbot->getJointSpeeds(speed1, speed2, speed3);
+}
+
+void LinkbotWrapper::getJointSpeedRatios(double &ratio1, double &ratio2, double &ratio3)
+{
+  _linkbot->getJointSpeedRatios(ratio1, ratio2, ratio3);
+}
+
+void LinkbotWrapper::getLEDColorRGB(int &r, int &g, int &b)
+{
+  _linkbot->getLEDColorRGB(r, g, b);
+}
+
+void LinkbotWrapper::getLEDColor(char color[])
+{
+  int getRGB[3];
+  int retval;
+  rgbHashTable * rgbTable = NULL;
+
+  getLEDColorRGB(getRGB[0], getRGB[1], getRGB[2]);
+
+  rgbTable = HT_Create();
+  retval = HT_GetKey(rgbTable, getRGB, color);
+  HT_Destroy(rgbTable);
+}
+
+void LinkbotWrapper::getAccelerometerData(double &x, double &y, double &z)
+{
+  callLinkbotFunction(getAccelerometerData, x, y, z);
+}
+
+void LinkbotWrapper::getBatteryVoltage(double &voltage)
+{
+  callLinkbotFunction(getBatteryVoltage, voltage);
+}
+
+void LinkbotWrapper::getDistance(double &distance, double radius)
+{
+  double angle;
+  getJointAngle(linkbot::JOINT_ONE, angle);
+  distance = (angle*M_PI/180.0)*radius;
+}
+
+/* MISC FUNCTIONS */
+void LinkbotWrapper::delaySeconds(int seconds)
+{
+  std::this_thread::sleep_for(std::chrono::seconds(seconds));
+}
+
+void LinkbotWrapper::systemTime(double &time)
+{
+#ifdef _WIN32
+  time = (GetTickCount()/1000.0);
+#elif defined __MACH__
+  clock_serv_t cclock;
+  mach_timespec_t mts;
+  mach_timespec_t cur_time;
+  host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+  clock_get_time(cclock, &mts);
+  mach_port_deallocate(mach_task_self(), cclock);
+  cur_time.tv_nsec = mts.tv_nsec;
+  time = mts.tv_sec;
+  time += (mts.tv_nsec / 1000000000.0);
+#else
+  struct timespec cur_time;
+  clock_gettime(CLOCK_REALTIME, &cur_time);
+  time = cur_time.tv_sec;
+  time += (cur_time.tv_nsec/1000000000.0);
+#endif
+}
+
+void LinkbotWrapper::blinkLED(double delay, int numBlinks)
+{
+  std::thread blinkThread {
+    [this, numBlinks, delay] {
+      int r,g,b;
+      getLEDColorRGB(r,g,b);
+      for(int i = 0; i < numBlinks; i++) {
+        setLEDColorRGB(0,0,0);
+        std::this_thread::sleep_for(std::chrono::milliseconds(int(delay*1000)));
+        setLEDColorRGB(r,g,b);
+        std::this_thread::sleep_for(std::chrono::milliseconds(int(delay*1000)));
+      }
+    }
+  };
+  blinkThread.detach();
+}
+
+/* Melody APIs */
+void LinkbotWrapper::playNotes(int *frequency, double *duration, int num, bool NB)
+{
+  if(NB) {
+    _playNotesAction->start();
+    std::thread playNotesThread(robotPlayNotesImp, this, frequency, duration, num, _playNotesAction);
+    playNotesThread.detach();
+  }
+  else {
+    robotPlayNotesImp(this, frequency, duration, num);
+  }
+}
+
+void LinkbotWrapper::playNotesWait()
+{
+  while(_playNotesAction->isRunning()) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(int(200)));
+  }
+}
+
+/* Position APIs */
+void LinkbotWrapper::initPosition(double x, double y, double angle)
+{
+  _posRecorder->initPosition(x, y, angle);
+}
+
+void LinkbotWrapper::getPosition(double &x, double &y, double &angle)
+{
+  _posRecorder->getPosition(x, y, angle);
+}
+
+void LinkbotWrapper::getxy(double &x, double &y)
+{
+  _posRecorder->getxy(x, y);
+}

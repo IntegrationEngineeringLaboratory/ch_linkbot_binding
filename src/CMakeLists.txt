@@ -29,8 +29,10 @@ set_property(TARGET linkbot_wrapper PROPERTY CXX_STANDARD_REQUIRED ON)
 find_library(LINKBOT linkbot PATHS /lib)
 
 target_include_directories(linkbot_wrapper PRIVATE ${Boost_INCLUDE_DIRS})
+target_include_directories(linkbot_wrapper PUBLIC ${CMAKE_SOURCE_DIR}/c-stem/robotics)
 target_link_libraries(linkbot_wrapper PUBLIC
     ${LINKBOT}
+    c_stem_robotics
     Threads::Threads
     ${Boost_LIBRARIES})
 
@@ -38,6 +40,8 @@ set(SOURCES
     chlinkbot_chdl.cpp
     chlinkboti_chdl.cpp
     chlinkbotl_chdl.cpp
+    linkbot_wrapper.cpp
+    rgbhashtable.c.cpp
     )
 
 add_library(chlinkbot MODULE ${SOURCES})
