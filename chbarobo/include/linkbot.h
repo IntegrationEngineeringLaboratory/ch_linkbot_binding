@@ -9,9 +9,9 @@
 #include <windows.h>
 #define sleep(x) Sleep((x)*1000)
 #endif
-#include<array.h>
 
-//#include<song.h>
+#include<array.h>
+#include<song.h>
 
 #ifndef ROBOT_RECORD_DATA_T
 #define ROBOT_RECORD_DATA_T
@@ -207,6 +207,7 @@ class CLinkbotI {
 		void drivexyToFunc(double x0, double xf, int n, double(*func)(double x), double radius, double trackwidth);
 		void drivexyToFuncNB(double x0, double xf, int n, double(*func)(double x), double radius, double trackwidth);
 		void drivexyWait(void);
+		void getPosition(double &x, double &y, double &angle);
 		void getxy(double &x, double &y);
 		void line(double x1, double y1, double z1, double x2, double y2, double z2, int linewidth, char *color);
 		void point(double x, double y, double z, int pointsize, char *color);
@@ -215,14 +216,17 @@ class CLinkbotI {
 		void text(double x, double y, double z, char *text);
 		void traceOff(void);
 		void traceOn(void);
+		void traceColor(char *color);
 
-		/* MUSIC Ch-only */
-        /*
-		int playNotes(note_t song[:], double speedFactor);
-		int playNotesNB(note_t song[:], double speedFactor);
-		int playMelody(note_t song(int), double speedFactor);
-        */
+        /* MUSIC Ch-only */
+        int playNotes(note_t song[:], double speedFactor);
+        int playNotesNB(note_t song[:], double speedFactor);
+        void playNotesWait();
+        int playMelody(note_t song(int), double speedFactor);
+        int playMelodyNB(note_t song(int), double speedFactor);
 
+		/* Extra Position Functions */
+		void initPosition(double x, double y, double angle);
 
         LinkbotImpl *m;
 
@@ -363,13 +367,14 @@ class CLinkbotL {
 		void text(double x, double y, double z, char *text);
 		void traceOff(void);
 		void traceOn(void);
+		void traceColor(char *color);
 
-		/* MUSIC Ch-only */
-        /*
-		int playNotes(note_t song[:], double speedFactor);
-		int playNotesNB(note_t song[:], double speedFactor);
-		int playMelody(note_t song(int), double speedFactor);
-        */
+        /* MUSIC Ch-only */
+        int playNotes(note_t song[:], double speedFactor);
+        int playNotesNB(note_t song[:], double speedFactor);
+        void playNotesWait();
+        int playMelody(note_t song(int), double speedFactor);
+        int playMelodyNB(note_t song(int), double speedFactor);
 
         LinkbotImpl *m;
 
@@ -458,6 +463,9 @@ public:
 	void traceOff(void);
 	void traceOn(void);
 
+  /* MISC FUNCTIONS */
+  void delaySeconds(double seconds);
+
 private:
 	CLinkbotI **_robots;
 	int _numRobots;
@@ -524,6 +532,9 @@ public:
 	/*ROBOSIM COMPATIBILITY*/
 	void traceOff(void);
 	void traceOn(void);
+
+  /* MISC FUNCTIONS */
+  void delaySeconds(double seconds);
 
 private:
 	CLinkbotL **_robots;

@@ -8,6 +8,7 @@ if(CMAKE_CROSSCOMPILING)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_CROSSCOMPILE_C_FLAGS} -static-libstdc++ -static-libgcc")
 endif(CMAKE_CROSSCOMPILING)
 
+add_subdirectory(c-stem/robotics)
 add_subdirectory(src)
 add_subdirectory(test)
 

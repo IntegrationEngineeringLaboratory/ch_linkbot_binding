@@ -24,8 +24,6 @@ EXPORTCH void CLinkbot_accelJointAngleNB_chdl(void *varg) {
     id=Ch_VaArg(interp, ap, LinkbotJoint);
     acceleration=Ch_VaArg(interp, ap, double);
     angle=Ch_VaArg(interp, ap, double);
-    unimplemented();
-    /* TODO
     l->setJointAccelI(7, acceleration, acceleration, acceleration);
     auto radians = angle * M_PI/180.0;
     auto alpha = acceleration * M_PI/180.0;
@@ -35,7 +33,6 @@ EXPORTCH void CLinkbot_accelJointAngleNB_chdl(void *varg) {
         0, timeout, LINKBOT_JOINT_STATE_HOLD,
         0, timeout, LINKBOT_JOINT_STATE_HOLD);
     l->accelJointAngleNB(id, acceleration, angle);
-    */
     Ch_VaEnd(interp, ap);
     return;
 }

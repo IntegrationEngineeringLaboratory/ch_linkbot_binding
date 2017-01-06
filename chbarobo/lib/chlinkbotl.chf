@@ -1255,6 +1255,12 @@ void CLinkbotL::traceOn(void)
 	return;
 }
 
+void CLinkbotL::traceColor(char *color)
+{
+	printf("Warning: function traceColor() not implemented on hardware robots\n");
+	return;
+}
+
 void CLinkbotL::traceOff(void)
 {
 	printf("Warning: function traceOff() not implemented on hardware robots\n");
@@ -1275,27 +1281,78 @@ void CLinkbotL::recordxyEnd(int &num)
 
 /*END ROBOSIM COMPATIBILITY FUNCTIONS*/
 
-/* play  a sequence of notes only Ch*/
 /* playNotes */
-#if 0
 int CLinkbotL::playNotes(note_t song[:], double speedFactor) {
     int numNotes = (int) shape(song);
-    int iter = 0;
-    double duration;
-    while(iter < numNotes) {
-        duration = (1 / (double)song[iter].duration)/speedFactor;
-        setBuzzerFrequency(song[iter].frequency, duration);
-        iter++;
+    int iter = 0, nb = 0;
+
+    int *frequency = new int[numNotes];
+    double *duration = new double[numNotes];
+
+    if(frequency == NULL || duration == NULL) {
+        fprintf(_stderr, "Error: playNotes() memory allocation failed.\n");
+        return -1;
     }
-    
+
+    for(iter = 0; iter < numNotes; iter++) {
+        frequency[iter] = song[iter].frequency;
+        duration[iter] = (1/(double)song[iter].duration)/speedFactor;
+    }
+
+    void *fptr;
+
+    fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbotL_playNotes_chdl");
+    if(fptr == NULL) {
+        fprintf(_stderr, "Error: %s(): dlsym(): %s\n", __func__,  dlerror());
+        return -1;
+    }
+
+    dlrunfun(fptr, NULL, NULL, this, frequency, duration, numNotes, nb);
+
     return 0;
 }
 
 /* playNotesNB*/
 int CLinkbotL::playNotesNB(note_t song[:], double speedFactor) {
-    
-    printf("Warning: function playNotesNB() not yet implemented in class CLinkbotL\n");
+    int numNotes = (int) shape(song);
+    int iter = 0, nb = 1;
+
+    int *frequency = new int[numNotes];
+    double *duration = new double[numNotes];
+
+    if(frequency == NULL || duration == NULL) {
+        fprintf(_stderr, "Error: playNotesNB() memory allocation failed.\n");
+        return -1;
+    }
+
+    for(iter = 0; iter < numNotes; iter++) {
+        frequency[iter] = song[iter].frequency;
+        duration[iter] = (1/(double)song[iter].duration)/speedFactor;
+    }
+
+    void *fptr;
+
+    fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbotL_playNotes_chdl");
+    if(fptr == NULL) {
+        fprintf(_stderr, "Error: %s(): dlsym(): %s\n", __func__,  dlerror());
+        return -1;
+    }
+
+    dlrunfun(fptr, NULL, NULL, this, frequency, duration, numNotes, nb);
     return 0;
+}
+
+void CLinkbotL::playNotesWait() {
+    void *fptr;
+
+    fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbotL_playNotesWait_chdl");
+    if(fptr == NULL) {
+        fprintf(_stderr, "Error: %s(): dlsym(): %s\n", __func__,  dlerror());
+        return;
+    }
+
+    dlrunfun(fptr, NULL, playNotesWait, this);
+    return;
 }
 
 /* play a premaed melody */
@@ -1303,7 +1360,7 @@ int CLinkbotL::playMelody(note_t song(int), double speedFactor){
     note_t note;
     int iter = 0;
     double duration;
-    
+
     note = song(iter);
 
     while(note.frequency != -1 && note.duration != -1) {
@@ -1314,8 +1371,30 @@ int CLinkbotL::playMelody(note_t song(int), double speedFactor){
     }
     return 0;
 }
-#endif
 
+int CLinkbotL::playMelodyNB(note_t song(int), double speedFactor) {
+  note_t note;
+  int num = 0, iter = 0;
+
+  /* Count number of notes */
+  note = song(iter);
+  while(note.frequency != -1 && note.duration != -1) {
+    iter++; 
+    note = song(iter);
+  }
+  num = iter++;
+
+  /* Construct note */
+  note_t notes[num];
+  for(iter = 0; iter < num; iter++) {
+    notes[iter] = song(iter);
+  }
+
+  /* Play notes */
+  playNotesNB(notes, speedFactor);
+  
+  return 0;
+}
 
 /*CLinkbotLGroup class */
 
@@ -1978,3 +2057,16 @@ void CLinkbotLGroup::traceOff(void)
 }
 /*END ROBOSIM COMPATIBILITY FUNCTIONS*/
 
+/* MISC FUNCTIONS */
+void CLinkbotLGroup::delaySeconds(double seconds)
+{
+    void *fptr;
+
+    fptr = dlsym(CLinkbotL::g_chlinkbot_dlhandle, "CLinkbotLGroup_delaySeconds_chdl");
+    if (fptr == NULL) {
+       printf("Error: %s(): dlsym(): %s\n", __class_func__, dlerror());
+       return;
+    }
+
+    dlrunfun(fptr, NULL, NULL, this, seconds);
+}
