@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2.1) 
-project(liblinkbot VERSION 1.0.11 LANGUAGES C CXX)
+project(liblinkbot VERSION 1.1.0 LANGUAGES C CXX)
 
 if(CMAKE_CROSSCOMPILING)
     find_library(PTHREAD pthread ${CMAKE_PREFIX_PATH} REQUIRED)
