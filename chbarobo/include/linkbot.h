@@ -556,5 +556,7 @@ int CLinkbotL::g_chlinkbot_dlcount=0;
 
 #pragma package <chbarobo>
 #pragma importf "chlinkboti.chf"
+#pragma importf "chlinkboti_common.chf"
 #pragma importf "chlinkbotl.chf"
+#pragma importf "chlinkbotl_common.chf"
 #endif
