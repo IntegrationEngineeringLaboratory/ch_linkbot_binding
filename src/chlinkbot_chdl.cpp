@@ -9,6 +9,17 @@
 fprintf(stderr, "Function %s is currently unimplemented.\n", __func__); \
 exit(-1)
 
+typedef enum robotJointState_e
+{
+    ROBOT_NEUTRAL = 0,
+    ROBOT_FORWARD,
+    ROBOT_BACKWARD,
+    ROBOT_HOLD,
+    ROBOT_POSITIVE,
+    ROBOT_NEGATIVE,
+    ROBOT_ACCEL,
+} robotJointState_t;
+
 /*linkbot accelJointAngleNB*/
 EXPORTCH void CLinkbot_accelJointAngleNB_chdl(void *varg) {
     ChInterp_t interp;
@@ -1121,14 +1132,14 @@ EXPORTCH void CLinkbot_setMovementStateNB_chdl(void *varg) {
 
 /*linkbot setMovementStateTime*/
 EXPORTCH void CLinkbot_setMovementStateTime_chdl(void *varg) {
-    unimplemented();
-#if 0
     ChInterp_t interp;
     ChVaList_t ap;
     class barobo::CLinkbot *l;
     robotJointState_t dir1;
     robotJointState_t dir2;
     robotJointState_t dir3;
+
+    LinkbotDirection dir[3];
     double seconds;
 
     Ch_VaStart(interp, ap, varg);
@@ -1137,17 +1148,38 @@ EXPORTCH void CLinkbot_setMovementStateTime_chdl(void *varg) {
     dir1=Ch_VaArg(interp, ap, robotJointState_t);
     dir2=Ch_VaArg(interp, ap, robotJointState_t);
     dir3=Ch_VaArg(interp, ap, robotJointState_t);
+    int i = 0;
+    for ( auto d : {dir1, dir2, dir3} ) {
+        switch(d)
+        {
+            case ROBOT_NEUTRAL:
+                dir[i] = LINKBOT_NEUTRAL;
+                break;
+            case ROBOT_FORWARD:
+                dir[i] = LINKBOT_FORWARD;
+                break;
+            case ROBOT_BACKWARD:
+                dir[i] = LINKBOT_BACKWARD;
+                break;
+            case ROBOT_HOLD:
+            case ROBOT_POSITIVE:
+                dir[i] = LINKBOT_POSITIVE;
+                break;
+            case ROBOT_NEGATIVE:
+                dir[i] = LINKBOT_NEGATIVE;
+                break;
+        }
+
+        i++;
+    }
     seconds=Ch_VaArg(interp, ap, double);
-    l->setMovementStateTime(dir1, dir2, dir3, seconds);
+    l->setMovementStateTime(dir[0], dir[1], dir[2], seconds);
     Ch_VaEnd(interp, ap);
     return;
-#endif
 }
 
 /*linkbot setMovementStateTime*/
 EXPORTCH void CLinkbot_setMovementStateTimeNB_chdl(void *varg) {
-    unimplemented();
-#if 0
     ChInterp_t interp;
     ChVaList_t ap;
     class barobo::CLinkbot *l;
@@ -1155,6 +1187,7 @@ EXPORTCH void CLinkbot_setMovementStateTimeNB_chdl(void *varg) {
     robotJointState_t dir2;
     robotJointState_t dir3;
     double seconds;
+    LinkbotDirection dir[3];
 
     Ch_VaStart(interp, ap, varg);
     
@@ -1162,11 +1195,34 @@ EXPORTCH void CLinkbot_setMovementStateTimeNB_chdl(void *varg) {
     dir1=Ch_VaArg(interp, ap, robotJointState_t);
     dir2=Ch_VaArg(interp, ap, robotJointState_t);
     dir3=Ch_VaArg(interp, ap, robotJointState_t);
+    int i = 0;
+    for ( auto d : {dir1, dir2, dir3} ) {
+        switch(d)
+        {
+            case ROBOT_NEUTRAL:
+                dir[i] = LINKBOT_NEUTRAL;
+                break;
+            case ROBOT_FORWARD:
+                dir[i] = LINKBOT_FORWARD;
+                break;
+            case ROBOT_BACKWARD:
+                dir[i] = LINKBOT_BACKWARD;
+                break;
+            case ROBOT_HOLD:
+            case ROBOT_POSITIVE:
+                dir[i] = LINKBOT_POSITIVE;
+                break;
+            case ROBOT_NEGATIVE:
+                dir[i] = LINKBOT_NEGATIVE;
+                break;
+        }
+
+        i++;
+    }
     seconds=Ch_VaArg(interp, ap, double);
-    l->setMovementStateTimeNB(dir1, dir2, dir3, seconds);
+    l->setMovementStateTimeNB(dir[0], dir[1], dir[2], seconds);
     Ch_VaEnd(interp, ap);
     return;
-#endif
 }
 
 
