@@ -20,6 +20,25 @@ typedef enum robotJointState_e
     ROBOT_ACCEL,
 } robotJointState_t;
 
+LinkbotDirection robotJointState_t2LinkbotDirection(robotJointState_t dir)
+{
+    switch(dir)
+    {
+        case ROBOT_NEUTRAL:
+            return LINKBOT_NEUTRAL;
+        case ROBOT_FORWARD:
+            return LINKBOT_FORWARD;
+        case ROBOT_BACKWARD:
+            return LINKBOT_BACKWARD;
+        case ROBOT_HOLD:
+        case ROBOT_POSITIVE:
+            return LINKBOT_POSITIVE;
+        case ROBOT_NEGATIVE:
+            return LINKBOT_NEGATIVE;
+    }
+}
+
+
 /*linkbot accelJointAngleNB*/
 EXPORTCH void CLinkbot_accelJointAngleNB_chdl(void *varg) {
     ChInterp_t interp;
@@ -1150,26 +1169,7 @@ EXPORTCH void CLinkbot_setMovementStateTime_chdl(void *varg) {
     dir3=Ch_VaArg(interp, ap, robotJointState_t);
     int i = 0;
     for ( auto d : {dir1, dir2, dir3} ) {
-        switch(d)
-        {
-            case ROBOT_NEUTRAL:
-                dir[i] = LINKBOT_NEUTRAL;
-                break;
-            case ROBOT_FORWARD:
-                dir[i] = LINKBOT_FORWARD;
-                break;
-            case ROBOT_BACKWARD:
-                dir[i] = LINKBOT_BACKWARD;
-                break;
-            case ROBOT_HOLD:
-            case ROBOT_POSITIVE:
-                dir[i] = LINKBOT_POSITIVE;
-                break;
-            case ROBOT_NEGATIVE:
-                dir[i] = LINKBOT_NEGATIVE;
-                break;
-        }
-
+        dir[i] = robotJointState_t2LinkbotDirection(d);
         i++;
     }
     seconds=Ch_VaArg(interp, ap, double);
@@ -1197,26 +1197,7 @@ EXPORTCH void CLinkbot_setMovementStateTimeNB_chdl(void *varg) {
     dir3=Ch_VaArg(interp, ap, robotJointState_t);
     int i = 0;
     for ( auto d : {dir1, dir2, dir3} ) {
-        switch(d)
-        {
-            case ROBOT_NEUTRAL:
-                dir[i] = LINKBOT_NEUTRAL;
-                break;
-            case ROBOT_FORWARD:
-                dir[i] = LINKBOT_FORWARD;
-                break;
-            case ROBOT_BACKWARD:
-                dir[i] = LINKBOT_BACKWARD;
-                break;
-            case ROBOT_HOLD:
-            case ROBOT_POSITIVE:
-                dir[i] = LINKBOT_POSITIVE;
-                break;
-            case ROBOT_NEGATIVE:
-                dir[i] = LINKBOT_NEGATIVE;
-                break;
-        }
-
+        dir[i] = robotJointState_t2LinkbotDirection(d);
         i++;
     }
     seconds=Ch_VaArg(interp, ap, double);
