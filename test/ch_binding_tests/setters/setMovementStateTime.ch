@@ -15,6 +15,7 @@ int main()
         ROBOT_FORWARD,
         3
     );
+    sleep(2);
     printf("Moving backward for 3 seconds...\n");
     robot.setMovementStateTime(
         ROBOT_BACKWARD,
@@ -22,6 +23,7 @@ int main()
         ROBOT_BACKWARD,
         3
         );
+    sleep(2);
     printf("Holding for 3 seconds...\n");
     robot.setMovementStateTime(
         ROBOT_HOLD,
@@ -29,6 +31,7 @@ int main()
         ROBOT_HOLD,
         3
     );
+    sleep(2);
     printf("Moving positive for 3 seconds...\n");
     robot.setMovementStateTime(
         ROBOT_POSITIVE,
@@ -36,6 +39,7 @@ int main()
         ROBOT_POSITIVE,
         3
     );
+    sleep(2);
     printf("Moving negative for 3 seconds...\n");
     robot.setMovementStateTime(
         ROBOT_NEGATIVE,

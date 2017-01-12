@@ -18,9 +18,8 @@ EXPORTCH void CLinkbotI_CLinkbotI_chdl(void *varg) {
 
   Ch_VaStart(interp, ap, varg);  
   if (Ch_VaCount(interp, ap) == 0){
-    // l= new barobo::CLinkbotI();
-    //Ch_CppChangeThisPointer(interp, l, sizeof(barobo::CLinkbotI));
-    printf("Wrong number of argument passed\n");
+    l= new barobo::CLinkbotI();
+    Ch_CppChangeThisPointer(interp, l, sizeof(barobo::CLinkbotI));
   }
   else if (Ch_VaCount(interp, ap) == 1){
     serialId = Ch_VaArg(interp, ap, const char *);
@@ -221,6 +220,38 @@ EXPORTCH void CLinkbotI_driveForeverNB_chdl(void *varg) {
 
   l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
   l->driveForeverNB();
+  Ch_VaEnd(interp, ap);
+  return;
+}
+
+/*linkbotDriveForward*/
+EXPORTCH void CLinkbotI_driveForward_chdl(void *varg) {
+  ChInterp_t interp;
+  ChVaList_t ap;
+  class barobo::CLinkbotI *l;
+  double angle;
+
+  Ch_VaStart(interp, ap, varg);
+
+  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  angle = Ch_VaArg(interp, ap, double);
+  l->driveForward(angle);
+  Ch_VaEnd(interp, ap);
+  return;
+}
+
+/*linkbotDriveForward*/
+EXPORTCH void CLinkbotI_driveForwardNB_chdl(void *varg) {
+  ChInterp_t interp;
+  ChVaList_t ap;
+  class barobo::CLinkbotI *l;
+  double angle;
+
+  Ch_VaStart(interp, ap, varg);
+
+  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  angle = Ch_VaArg(interp, ap, double);
+  l->driveForwardNB(angle);
   Ch_VaEnd(interp, ap);
   return;
 }
@@ -526,6 +557,24 @@ EXPORTCH void CLinkbotI_getDistance_chdl(void *varg) {
 
 /*END GET FUNCTIONS*/
 /*SET FUNCTIONS*/
+
+/*linkbot setSpeed*/
+EXPORTCH void CLinkbotI_setSpeed_chdl(void *varg) {
+    ChInterp_t interp;
+    ChVaList_t ap;
+    class barobo::CLinkbot *l;
+	double speed;
+	double radius;
+
+    Ch_VaStart(interp, ap, varg);
+    
+    l=Ch_VaArg(interp, ap, class barobo::CLinkbot *);
+    speed=Ch_VaArg(interp, ap, double);
+	radius=Ch_VaArg(interp, ap, double);
+    l->setSpeed(speed, radius);
+    Ch_VaEnd(interp, ap);
+    return;
+}
 
 /*END SET FUNCTIONS*/
 /*MISCELLANEOUS FUNCTIONS*/
