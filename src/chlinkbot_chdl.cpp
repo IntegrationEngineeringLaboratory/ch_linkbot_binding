@@ -751,8 +751,7 @@ EXPORTCH void CLinkbot_getLEDColor_chdl(void *varg) {
     
     l=Ch_VaArg(interp, ap, class barobo::CLinkbot *);
     color=Ch_VaArg(interp, ap, char *);
-    unimplemented();
-    //l->getLEDColor(color);
+    l->getLEDColor(color);
     Ch_VaEnd(interp, ap);
     return;
 }
@@ -1292,8 +1291,6 @@ EXPORTCH void CLinkbot_setLEDColorRGB_chdl(void *varg) {
 
 /*linkbot setLEDColor*/
 EXPORTCH void CLinkbot_setLEDColor_chdl(void *varg) {
-    unimplemented();
-#if 0
     ChInterp_t interp;
     ChVaList_t ap;
     class barobo::CLinkbot *l;
@@ -1306,7 +1303,6 @@ EXPORTCH void CLinkbot_setLEDColor_chdl(void *varg) {
     l->setLEDColor(color);
     Ch_VaEnd(interp, ap);
     return;
-#endif
 }
 
 
