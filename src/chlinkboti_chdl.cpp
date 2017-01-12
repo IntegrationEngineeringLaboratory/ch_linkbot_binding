@@ -547,10 +547,7 @@ EXPORTCH void CLinkbotI_getDistance_chdl(void *varg) {
   l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
   distance=Ch_VaArg(interp, ap, double *);
   radius=Ch_VaArg(interp, ap, double);
-  unimplemented();
-#if 0
   l->getDistance(*distance, radius);
-#endif
   Ch_VaEnd(interp, ap);
   return;
 }

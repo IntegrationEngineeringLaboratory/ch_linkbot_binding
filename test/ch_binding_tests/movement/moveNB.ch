@@ -10,6 +10,7 @@ int main()
 
     robot.moveNB(90, 90, 90);
     printf("Moving all joints 90 degrees...");
+    robot.moveWait();
     printf("Done.\n");
     robot.stop();
 
