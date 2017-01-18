@@ -10,6 +10,7 @@ int main()
 
     printf("holdJointsAtExit()");
     robot.holdJointsAtExit();
+    robot.move(0, 0, 0);
 
     return 0;    
 }

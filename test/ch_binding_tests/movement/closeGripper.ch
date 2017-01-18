@@ -10,6 +10,7 @@ int main()
 
     printf("closeGripper()");
     robot.closeGripper();
+    robot.moveWait();
     robot.stop();
 
     return 0;    

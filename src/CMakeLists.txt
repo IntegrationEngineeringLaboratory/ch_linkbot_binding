@@ -22,25 +22,12 @@ set(WRAPPER_SOURCES
     rgbhashtable.c.cpp
     )
 
-add_library(linkbot_wrapper STATIC ${WRAPPER_SOURCES})
-set_property(TARGET linkbot_wrapper PROPERTY CXX_STANDARD 11)
-set_property(TARGET linkbot_wrapper PROPERTY CXX_STANDARD_REQUIRED ON)
-
 find_library(LINKBOT linkbot PATHS /lib)
-
-target_include_directories(linkbot_wrapper PRIVATE ${Boost_INCLUDE_DIRS})
-target_include_directories(linkbot_wrapper PUBLIC ${CMAKE_SOURCE_DIR}/c-stem/robotics)
-target_link_libraries(linkbot_wrapper PUBLIC
-    ${LINKBOT}
-    c_stem_robotics
-    Threads::Threads
-    ${Boost_LIBRARIES})
 
 set(SOURCES
     chlinkbot_chdl.cpp
     chlinkboti_chdl.cpp
     chlinkbotl_chdl.cpp
-    linkbot_wrapper.cpp
     rgbhashtable.c.cpp
     )
 
@@ -69,8 +56,8 @@ set(chLibraries ${CHLIB} ${CHSDKLIB})
 message(STATUS "Found Ch libraries: ${chLibraries}")
 
 target_link_libraries(chlinkbot
-    PRIVATE linkbot_wrapper
             ${chLibraries}
+            linkbot
     )
 
 install(TARGETS chlinkbot LIBRARY DESTINATION chbarobo/dl)

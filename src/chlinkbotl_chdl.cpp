@@ -137,8 +137,8 @@ EXPORTCH void CLinkbotLGroup_CLinkbotLGroup_chdl(void *varg) {
   ChVaList_t ap;
 
   Ch_VaStart(interp, ap, varg);
-  auto *c=new barobo::CLinkbotGroup();
-  Ch_CppChangeThisPointer(interp, c, sizeof(barobo::CLinkbotGroup));
+  auto *c=new barobo::CLinkbotLGroup();
+  Ch_CppChangeThisPointer(interp, c, sizeof(barobo::CLinkbotLGroup));
   Ch_VaEnd(interp, ap);
 }
 
@@ -146,12 +146,12 @@ EXPORTCH void CLinkbotLGroup_CLinkbotLGroup_chdl(void *varg) {
 EXPORTCH void CLinkbotLGroup_dCLinkbotLGroup_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotGroup *c;
+  barobo::CLinkbotLGroup *c;
   
   Ch_VaStart(interp, ap, varg);
-  c = Ch_VaArg(interp, ap, class barobo::CLinkbotGroup *);
+  c = Ch_VaArg(interp, ap, barobo::CLinkbotLGroup *);
   if(Ch_CppIsArrayElement(interp)){
-    c->~CLinkbotGroup();
+    c->~CLinkbotLGroup();
   }
   else {
     delete c;
