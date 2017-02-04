@@ -55,8 +55,6 @@ EXPORTCH void CLinkbotI_dCLinkbotI_chdl(void *varg) {
 
 /*linkbot driveAccelJointTimeNB*/
 EXPORTCH void CLinkbotI_driveAccelJointTimeNB_chdl(void *varg) {
-  unimplemented();
-#if 0
   ChInterp_t interp;
   ChVaList_t ap;
   class barobo::CLinkbotI *l;
@@ -73,7 +71,6 @@ EXPORTCH void CLinkbotI_driveAccelJointTimeNB_chdl(void *varg) {
   l->driveAccelJointTimeNB(radius, acceleration, time);
   Ch_VaEnd(interp, ap);
   return;
-#endif
 }
 
 /*linkbot driveAccelToVelocityNB*/
