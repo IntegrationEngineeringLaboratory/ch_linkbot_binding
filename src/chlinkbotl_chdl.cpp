@@ -1,12 +1,15 @@
 #include<ch.h>
 #include<math.h>
 #include<stdio.h>
+#include <string.h>
 #include<functional>
 #include<linkbot/linkbot.hpp>
 
 #define unimplemented() \
 fprintf(stderr, "Function %s is currently unimplemented.\n", __func__); \
 exit(-1)
+
+extern int linkbot_count;
 
 /*class creator*/
 EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
@@ -18,8 +21,45 @@ EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
     
     Ch_VaStart(interp, ap, varg);
 	if (Ch_VaCount(interp, ap) == 0){
-		l = new barobo::CLinkbotL();
+    char path[256];
+
+#ifdef __MACH__
+    FSRef ref;
+    FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
+    FSRefMakePath(&ref, (UInt8*) &path, pathMax);
+    strcat(path, "/C-STEM Studio/LinkbotController/linkbot_ids");
+
+#elif defined(__linux__) // specify the path of configure file to path varaible
+    strcpy(path, getenv("HOME"));
+    strcat(path, "/.local/share/C-STEMStudio/LinkbotController/linkbot_ids");
+
+#elif defined(_WIN32)
+    if (SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, path) != S_OK) {
+      fprintf(stderr, "Could not find AppData directory!\n");
+      return NULL;
+    }
+    strcat(path, "\\C-STEM Studio\\LinkbotController\\linkbot_ids");
+#endif
+
+    FILE *fp = fopen(path, "r");
+    if(fp == NULL) {
+      fprintf(stderr, "Fail to open file for robot ids!\n");
+      exit(-1);
+    }
+
+    int i=0;
+    char id[5];
+    while(i<=linkbot_count) {
+      if(fscanf(fp, "%s", id) < 0) {
+        fprintf(stderr, "Not enough robot found in the configuration file!\n");
+        exit(-1);
+      }
+      i++;
+    };
+    fclose(fp);
+		l = new barobo::CLinkbotL(id);
 		Ch_CppChangeThisPointer(interp, l, sizeof(barobo::CLinkbotL));
+    linkbot_count++;
 	}
 	else if (Ch_VaCount(interp, ap) == 1){
 		serialId = Ch_VaArg(interp, ap, const char *);
