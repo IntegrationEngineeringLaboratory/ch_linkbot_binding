@@ -30,7 +30,7 @@ EXPORTCH void CLinkbotI_CLinkbotI_chdl(void *varg) {
 
 #elif defined(__linux__) // specify the path of configure file to path varaible
     strcpy(path, getenv("HOME"));
-    strcat(path, "/.local/share/C-STEMStudio/LinkbotController/linkbot_ids");
+    strcat(path, "/.config/C-STEMStudio/LinkbotController/linkbot_ids");
 
 #elif defined(_WIN32)
     if (SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, path) != S_OK) {
