@@ -1353,8 +1353,6 @@ EXPORTCH void CLinkbot_delaySeconds_chdl(void *varg) {
 
 /*linkbot systemTime*/
 EXPORTCH void CLinkbot_systemTime_chdl(void *varg) {
-    unimplemented();
-#if 0
     ChInterp_t interp;
     ChVaList_t ap;
     class barobo::CLinkbot *l;
@@ -1364,10 +1362,28 @@ EXPORTCH void CLinkbot_systemTime_chdl(void *varg) {
     
     l=Ch_VaArg(interp, ap, class barobo::CLinkbot *);
 	time=Ch_VaArg(interp, ap, double *);
-    l->systemTime(*time);
+
+#ifdef _WIN32
+  *time = (GetTickCount()/1000.0);
+#elif defined __MACH__
+  clock_serv_t cclock;
+  mach_timespec_t mts;
+  mach_timespec_t cur_time;
+  host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+  clock_get_time(cclock, &mts);
+  mach_port_deallocate(mach_task_self(), cclock);
+  cur_time.tv_nsec = mts.tv_nsec;
+  *time = mts.tv_sec;
+  *time += (mts.tv_nsec / 1000000000.0);
+#else
+  struct timespec cur_time;
+  clock_gettime(CLOCK_REALTIME, &cur_time);
+  *time = cur_time.tv_sec;
+  *time += (cur_time.tv_nsec/1000000000.0);
+#endif
+
     Ch_VaEnd(interp, ap);
     return;
-#endif
 }
 
 /*linkbot resetToZeroNB*/
