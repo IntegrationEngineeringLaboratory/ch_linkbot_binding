@@ -603,8 +603,6 @@ EXPORTCH void CLinkbotI_setSpeed_chdl(void *varg) {
 
 /*linkbot recordDistanceBegin*/
 EXPORTCH void CLinkbotI_recordDistanceBegin_chdl(void *varg) {
-  unimplemented();
-#if 0
   ChInterp_t interp;
   ChVaList_t ap;
   class LinkbotWrapper *l;
@@ -625,17 +623,14 @@ EXPORTCH void CLinkbotI_recordDistanceBegin_chdl(void *varg) {
   seconds = Ch_VaArg(interp, ap, double);
   shiftData = Ch_VaArg(interp, ap, int);
 
-  l->recordDistanceBegin(id, *time, *distance, radius, seconds, shiftData);
+  l->recordDistanceBegin(*time, *distance, radius, seconds);
 
   Ch_VaEnd(interp, ap);
   return;
-#endif
 }
 
 /*linkbot recordDistanceEnd*/
 EXPORTCH void CLinkbotI_recordDistanceEnd_chdl(void *varg) {
-  unimplemented();
-#if 0
   ChInterp_t interp;
   ChVaList_t ap;
   class LinkbotWrapper *l;
@@ -647,10 +642,9 @@ EXPORTCH void CLinkbotI_recordDistanceEnd_chdl(void *varg) {
   l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   id = Ch_VaArg(interp, ap, robotJointId_t);
   num = Ch_VaArg(interp, ap, int*);
-  l->recordDistanceEnd(id, *num);
+  l->recordDistanceEnd(*num);
   Ch_VaEnd(interp, ap);
   return;
-#endif
 }
 
 /*linkbot recordDistanceOffset*/
