@@ -3,7 +3,7 @@
 #include<stdio.h>
 #include <string.h>
 #include<functional>
-#include<linkbot/linkbot.hpp>
+#include "linkbot_wrapper.h"
 
 #define unimplemented() \
   fprintf(stderr, "Function %s is currently unimplemented.\n", __func__); \
@@ -16,7 +16,7 @@ EXPORTCH void CLinkbotI_CLinkbotI_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
   const char* serialId;
-  class barobo::CLinkbotI * l;
+  class LinkbotWrapper * l;
 
   Ch_VaStart(interp, ap, varg);  
   if (Ch_VaCount(interp, ap) == 0){
@@ -57,14 +57,14 @@ EXPORTCH void CLinkbotI_CLinkbotI_chdl(void *varg) {
     };
     fclose(fp);
 
-    l= new barobo::CLinkbotI(id);
-    Ch_CppChangeThisPointer(interp, l, sizeof(barobo::CLinkbotI));
+    l= newLinkbotIWrapper(id);
+    Ch_CppChangeThisPointer(interp, l, sizeof(LinkbotWrapper));
     linkbot_count++;
   }
   else if (Ch_VaCount(interp, ap) == 1){
     serialId = Ch_VaArg(interp, ap, const char *);
-    l = new barobo::CLinkbotI(serialId);
-    Ch_CppChangeThisPointer(interp, l, sizeof(barobo::CLinkbotI));
+    l = newLinkbotIWrapper(serialId);
+    Ch_CppChangeThisPointer(interp, l, sizeof(LinkbotWrapper));
   }
   else {
     printf("Wrong number of argument passed\n");
@@ -78,12 +78,12 @@ EXPORTCH void CLinkbotI_CLinkbotI_chdl(void *varg) {
 EXPORTCH void CLinkbotI_dCLinkbotI_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
 
   Ch_VaStart(interp, ap, varg);
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   if(Ch_CppIsArrayElement(interp)){
-    l->~CLinkbotI();
+    l->~LinkbotWrapper();
   }
   else{
     delete l;
@@ -98,14 +98,14 @@ EXPORTCH void CLinkbotI_dCLinkbotI_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveAccelJointTimeNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double radius;
   double acceleration;
   double time;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   radius=Ch_VaArg(interp, ap, double);
   acceleration=Ch_VaArg(interp, ap, double);
   time=Ch_VaArg(interp, ap, double);
@@ -120,14 +120,14 @@ EXPORTCH void CLinkbotI_driveAccelToVelocityNB_chdl(void *varg) {
 #if 0
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double radius;
   double acceleration;
   double time;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   radius=Ch_VaArg(interp, ap, double);
   acceleration=Ch_VaArg(interp, ap, double);
   time=Ch_VaArg(interp, ap, double);
@@ -143,13 +143,13 @@ EXPORTCH void CLinkbotI_driveAccelToMaxSpeedNB_chdl(void *varg) {
 #if 0
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double radius;
   double acceleration;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   radius=Ch_VaArg(interp, ap, double);
   acceleration=Ch_VaArg(interp, ap, double);
   l->driveAccelToMaxSpeedNB(radius, acceleration);
@@ -164,14 +164,14 @@ EXPORTCH void CLinkbotI_driveAccelDistanceNB_chdl(void *varg) {
 #if 0
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double radius;
   double acceleration;
   double distance;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   radius=Ch_VaArg(interp, ap, double);
   acceleration=Ch_VaArg(interp, ap, double);
   distance=Ch_VaArg(interp, ap, double);
@@ -185,12 +185,12 @@ EXPORTCH void CLinkbotI_driveAccelDistanceNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveAngle_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle = Ch_VaArg(interp, ap, double);
   l->driveAngle(angle);
   Ch_VaEnd(interp, ap);
@@ -201,12 +201,12 @@ EXPORTCH void CLinkbotI_driveAngle_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveAngleNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle = Ch_VaArg(interp, ap, double);
   l->driveAngleNB(angle);
   Ch_VaEnd(interp, ap);
@@ -217,13 +217,13 @@ EXPORTCH void CLinkbotI_driveAngleNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveDistance_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double distance;
   double radius;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   distance=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
   l->driveDistance(distance, radius);
@@ -234,13 +234,13 @@ EXPORTCH void CLinkbotI_driveDistance_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveDistanceNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double distance;
   double radius;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   distance=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
   l->driveDistanceNB(distance, radius);
@@ -251,11 +251,11 @@ EXPORTCH void CLinkbotI_driveDistanceNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveForeverNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   l->driveForeverNB();
   Ch_VaEnd(interp, ap);
   return;
@@ -265,12 +265,12 @@ EXPORTCH void CLinkbotI_driveForeverNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveForward_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle = Ch_VaArg(interp, ap, double);
   l->driveForward(angle);
   Ch_VaEnd(interp, ap);
@@ -281,12 +281,12 @@ EXPORTCH void CLinkbotI_driveForward_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveForwardNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle = Ch_VaArg(interp, ap, double);
   l->driveForwardNB(angle);
   Ch_VaEnd(interp, ap);
@@ -297,12 +297,12 @@ EXPORTCH void CLinkbotI_driveForwardNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveTime_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double seconds;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   seconds=Ch_VaArg(interp, ap, double);
   l->driveTime(seconds);
   Ch_VaEnd(interp, ap);
@@ -313,12 +313,12 @@ EXPORTCH void CLinkbotI_driveTime_chdl(void *varg) {
 EXPORTCH void CLinkbotI_driveTimeNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double seconds;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   seconds=Ch_VaArg(interp, ap, double);
   l->driveTimeNB(seconds);
   Ch_VaEnd(interp, ap);
@@ -329,14 +329,14 @@ EXPORTCH void CLinkbotI_driveTimeNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_turnLeft_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
   double radius;
   double tracklength;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
   tracklength=Ch_VaArg(interp, ap, double);
@@ -348,14 +348,14 @@ EXPORTCH void CLinkbotI_turnLeft_chdl(void *varg) {
 EXPORTCH void CLinkbotI_turnLeftNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
   double radius;
   double tracklength;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
   tracklength=Ch_VaArg(interp, ap, double);
@@ -368,14 +368,14 @@ EXPORTCH void CLinkbotI_turnLeftNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_turnRight_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
   double radius;
   double tracklength;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
   tracklength=Ch_VaArg(interp, ap, double);
@@ -388,14 +388,14 @@ EXPORTCH void CLinkbotI_turnRight_chdl(void *varg) {
 EXPORTCH void CLinkbotI_turnRightNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
   double radius;
   double tracklength;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
   tracklength=Ch_VaArg(interp, ap, double);
@@ -408,12 +408,12 @@ EXPORTCH void CLinkbotI_turnRightNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_openGripper_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle=Ch_VaArg(interp, ap, double);
   l->openGripper(angle);
   Ch_VaEnd(interp, ap);
@@ -424,12 +424,12 @@ EXPORTCH void CLinkbotI_openGripper_chdl(void *varg) {
 EXPORTCH void CLinkbotI_openGripperNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   angle=Ch_VaArg(interp, ap, double);
   l->openGripperNB(angle);
   Ch_VaEnd(interp, ap);
@@ -440,11 +440,11 @@ EXPORTCH void CLinkbotI_openGripperNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_closeGripper_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   l->closeGripper();
   Ch_VaEnd(interp, ap);
   return;
@@ -454,11 +454,11 @@ EXPORTCH void CLinkbotI_closeGripper_chdl(void *varg) {
 EXPORTCH void CLinkbotI_closeGripperNB_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   l->closeGripperNB();
   Ch_VaEnd(interp, ap);
   return;
@@ -468,13 +468,13 @@ EXPORTCH void CLinkbotI_closeGripperNB_chdl(void *varg) {
 EXPORTCH void CLinkbotI_drivexy_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double x, y, radius, trackwidth;
   bool nb = false;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   x=Ch_VaArg(interp, ap, double);
   y=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
@@ -493,13 +493,13 @@ EXPORTCH void CLinkbotI_drivexy_chdl(void *varg) {
 EXPORTCH void CLinkbotI_drivexyTo_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double x, y, radius, trackwidth;
   bool nb = false;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   x=Ch_VaArg(interp, ap, double);
   y=Ch_VaArg(interp, ap, double);
   radius=Ch_VaArg(interp, ap, double);
@@ -518,12 +518,12 @@ EXPORTCH void CLinkbotI_drivexyTo_chdl(void *varg) {
 EXPORTCH void CLinkbotI_drivexyToArray_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double *px, *py, radius, trackwidth;
   int num, nb = 0;
 
   Ch_VaStart(interp, ap, varg);
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   px = Ch_VaArg(interp, ap, double*);
   py = Ch_VaArg(interp, ap, double*);
   num = Ch_VaArg(interp, ap, int);
@@ -543,10 +543,10 @@ EXPORTCH void CLinkbotI_drivexyToArray_chdl(void *varg) {
 EXPORTCH void CLinkbotI_drivexyWait_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
 
   Ch_VaStart(interp, ap, varg);
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   unimplemented();
 #if 0
   l->drivexyWait();
@@ -562,14 +562,14 @@ EXPORTCH void CLinkbotI_drivexyWait_chdl(void *varg) {
 EXPORTCH void CLinkbotI_getDistance_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double *distance;
   double radius;
 
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   distance=Ch_VaArg(interp, ap, double *);
   radius=Ch_VaArg(interp, ap, double);
   l->getDistance(*distance, radius);
@@ -607,7 +607,7 @@ EXPORTCH void CLinkbotI_recordDistanceBegin_chdl(void *varg) {
 #if 0
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   robotJointId_t id;
   double** time;
   double**distance;
@@ -617,7 +617,7 @@ EXPORTCH void CLinkbotI_recordDistanceBegin_chdl(void *varg) {
 
   Ch_VaStart(interp, ap, varg);
 
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   id = Ch_VaArg(interp, ap, robotJointId_t);
   time = Ch_VaArg(interp, ap, double**);
   distance = Ch_VaArg(interp, ap, double**);
@@ -638,13 +638,13 @@ EXPORTCH void CLinkbotI_recordDistanceEnd_chdl(void *varg) {
 #if 0
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   robotJointId_t id;
   int *num;
 
   Ch_VaStart(interp, ap, varg);
 
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   id = Ch_VaArg(interp, ap, robotJointId_t);
   num = Ch_VaArg(interp, ap, int*);
   l->recordDistanceEnd(id, *num);
@@ -659,12 +659,12 @@ EXPORTCH void CLinkbotI_recordDistanceOffset_chdl(void *varg) {
 #if 0
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double distance;
 
   Ch_VaStart(interp, ap, varg);
 
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   distance = Ch_VaArg(interp, ap, double);
   l->recordDistanceOffset(distance);
   Ch_VaEnd(interp, ap);
@@ -676,14 +676,14 @@ EXPORTCH void CLinkbotI_recordDistanceOffset_chdl(void *varg) {
 EXPORTCH void CLinkbotI_playNotes_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   int *frequency, num;
   double *duration;
   bool nb = false;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   frequency=Ch_VaArg(interp, ap, int*);
   duration=Ch_VaArg(interp, ap, double *);
   num=Ch_VaArg(interp, ap, int);
@@ -700,10 +700,10 @@ EXPORTCH void CLinkbotI_playNotes_chdl(void *varg) {
 EXPORTCH void CLinkbotI_playNotesWait_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
 
   Ch_VaStart(interp, ap, varg);
-  l = Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
   unimplemented();
 #if 0
   l->playNotesWait();
@@ -717,12 +717,12 @@ EXPORTCH void CLinkbotI_playNotesWait_chdl(void *varg) {
 EXPORTCH void CLinkbotI_initPosition_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double x, y, angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   x=Ch_VaArg(interp, ap, double);
   y=Ch_VaArg(interp, ap, double);
   angle=Ch_VaArg(interp, ap, double);
@@ -738,12 +738,12 @@ EXPORTCH void CLinkbotI_initPosition_chdl(void *varg) {
 EXPORTCH void CLinkbotI_getPosition_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double *x, *y, *angle;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   x=Ch_VaArg(interp, ap, double *);
   y=Ch_VaArg(interp, ap, double *);
   angle=Ch_VaArg(interp, ap, double *);
@@ -759,12 +759,12 @@ EXPORTCH void CLinkbotI_getPosition_chdl(void *varg) {
 EXPORTCH void CLinkbotI_getxy_chdl(void *varg) {
   ChInterp_t interp;
   ChVaList_t ap;
-  class barobo::CLinkbotI *l;
+  class LinkbotWrapper *l;
   double *x, *y;
 
   Ch_VaStart(interp, ap, varg);
 
-  l=Ch_VaArg(interp, ap, class barobo::CLinkbotI *);
+  l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   x=Ch_VaArg(interp, ap, double *);
   y=Ch_VaArg(interp, ap, double *);
   unimplemented();

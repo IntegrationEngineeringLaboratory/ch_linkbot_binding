@@ -3,7 +3,7 @@
 #include<stdio.h>
 #include <string.h>
 #include<functional>
-#include<linkbot/linkbot.hpp>
+#include "linkbot_wrapper.h"
 
 #define unimplemented() \
 fprintf(stderr, "Function %s is currently unimplemented.\n", __func__); \
@@ -16,8 +16,7 @@ EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
     ChInterp_t interp;
     ChVaList_t ap;
 	const char* serialId;
-	LinkbotFormFactor type;
-	class barobo::CLinkbotL *l;
+	class LinkbotWrapper *l;
     
     Ch_VaStart(interp, ap, varg);
 	if (Ch_VaCount(interp, ap) == 0){
@@ -57,23 +56,17 @@ EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
       i++;
     };
     fclose(fp);
-		l = new barobo::CLinkbotL(id);
-		Ch_CppChangeThisPointer(interp, l, sizeof(barobo::CLinkbotL));
+		l = newLinkbotLWrapper(id);
+		Ch_CppChangeThisPointer(interp, l, sizeof(LinkbotWrapper));
     linkbot_count++;
 	}
 	else if (Ch_VaCount(interp, ap) == 1){
 		serialId = Ch_VaArg(interp, ap, const char *);
-		l = new barobo::CLinkbotL(serialId);
-		Ch_CppChangeThisPointer(interp, l, sizeof(barobo::CLinkbotL));
+		l = newLinkbotLWrapper(serialId);
+		Ch_CppChangeThisPointer(interp, l, sizeof(LinkbotWrapper));
 	}
 	else {
 		printf("Wrong number of argument passed\n");
-	}
-	l->getFormFactor(type);
-	if (type == 0)
-	{
-		printf("A barobo::CLinkbotL-I is connected, not a barobo::CLinkbotL-L.\nPlease connect a Linbot-L.\nExiting..\n");
-		exit(-1);
 	}
 	Ch_VaEnd(interp, ap);
 	return;
@@ -83,12 +76,12 @@ EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
 EXPORTCH void CLinkbotL_dCLinkbotL_chdl(void *varg) {
     ChInterp_t interp;
     ChVaList_t ap;
-    class barobo::CLinkbotL *l;
+    class LinkbotWrapper *l;
      
     Ch_VaStart(interp, ap, varg);
-    l=Ch_VaArg(interp, ap, class barobo::CLinkbotL *);
+    l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
     if(Ch_CppIsArrayElement(interp))
-        l->~CLinkbotL();
+        l->~LinkbotWrapper();
     else
         delete l;
     Ch_VaEnd(interp, ap);
@@ -101,18 +94,18 @@ EXPORTCH int CLinkbotL_connect_chdl(void *varg) {
 #if 0
     ChInterp_t interp;
     ChVaList_t ap;
-    class barobo::CLinkbotL *l;
+    class LinkbotWrapper *l;
 	int type;
     int rc;
     Ch_VaStart(interp, ap, varg);
    
-    l=Ch_VaArg(interp, ap, class barobo::CLinkbotL *);
+    l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
     rc = l->connect();
     Ch_VaEnd(interp, ap);
     l->getFormFactor(type);
 	if (type == 0)
 	{
-		printf("WARNING: A barobo::CLinkbotL-I is connected, not a barobo::CLinkbotL-L.\nPlease connect a Linbot-L.\nExiting...\n");
+		printf("WARNING: A LinkbotWrapper-I is connected, not a LinkbotWrapper-L.\nPlease connect a Linbot-L.\nExiting...\n");
 		exit(-1);
 	}
     return rc;
@@ -125,13 +118,13 @@ EXPORTCH int CLinkbotL_connectWithSerialID_chdl(void *varg) {
 #if 0
     ChInterp_t interp;
     ChVaList_t ap;
-    class barobo::CLinkbotL *l;
+    class LinkbotWrapper *l;
     const char *id;
 	int type;
     int rc;
     Ch_VaStart(interp, ap, varg);
    
-    l=Ch_VaArg(interp, ap, class barobo::CLinkbotL *);
+    l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
     id = Ch_VaArg(interp, ap, const char*);
     rc = l->connectWithSerialID(id);
     Ch_VaEnd(interp, ap);
@@ -151,10 +144,10 @@ EXPORTCH void CLinkbotL_disconnect_chdl(void *varg) {
 #if 0
     ChInterp_t interp;
     ChVaList_t ap;
-    class barobo::CLinkbotL *l;
+    class LinkbotWrapper *l;
     Ch_VaStart(interp, ap, varg);
     
-    l=Ch_VaArg(interp, ap, class barobo::CLinkbotL *);
+    l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
     l->disconnect();
     Ch_VaEnd(interp, ap);
     return;
