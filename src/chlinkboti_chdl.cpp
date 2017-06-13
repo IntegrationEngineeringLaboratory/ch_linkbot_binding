@@ -584,15 +584,15 @@ EXPORTCH void CLinkbotI_getDistance_chdl(void *varg) {
 EXPORTCH void CLinkbotI_setSpeed_chdl(void *varg) {
     ChInterp_t interp;
     ChVaList_t ap;
-    class barobo::CLinkbot *l;
-	double speed;
-	double radius;
+    class LinkbotWrapper *l;
+    double speed;
+    double radius;
 
     Ch_VaStart(interp, ap, varg);
     
-    l=Ch_VaArg(interp, ap, class barobo::CLinkbot *);
+    l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
     speed=Ch_VaArg(interp, ap, double);
-	radius=Ch_VaArg(interp, ap, double);
+    radius=Ch_VaArg(interp, ap, double);
     l->setSpeed(speed, radius);
     Ch_VaEnd(interp, ap);
     return;
