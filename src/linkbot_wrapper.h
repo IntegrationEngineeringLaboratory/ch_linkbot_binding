@@ -45,6 +45,7 @@ namespace linkbot {
 
 typedef linkbot::Joint robotJointId_t;
 typedef linkbot::JointState robotJointState_t;
+typedef linkbot::Direction robotDirection_t;
 typedef double* robotRecordData_t;
 
 namespace cstem {
@@ -88,6 +89,18 @@ class LinkbotWrapper {
     void driveDistanceNB(double distance, double radius);
     void driveTime(double time);
     void driveTimeNB(double time);
+    void driveForward(double angle);
+    void driveForwardNB(double angle);
+
+    void accelJointAngleNB(robotJointId_t id, double acceleration, double angle);
+    void accelJointTimeNB(robotJointId_t id, double acceleration, double time);
+    void accelJointToVelocityNB(robotJointId_t id, double acceleration, double speed);
+    void accelJointToMaxSpeedNB(robotJointId_t id, double acceleration);
+    void driveAccelJointTimeNB(double radius, double acceleration, double time);
+    void driveAccelToVelocityNB(double radius, double acceleration, double velocity);
+    void driveAccelToMaxSpeedNB(double radius, double acceleration);
+    void driveAccelDistanceNB(double radius, double acceleration, double distance);
+
     void turnLeft(double angle, double radius, double tracklength);
     void turnLeftNB(double angle, double radius, double tracklength);
     void turnRight(double angle, double radius, double tracklength);
@@ -109,7 +122,7 @@ class LinkbotWrapper {
     void relaxJoints();
     void resetToZero();
     void resetToZeroNB();
-    void stop();
+    void stop(int mask = 0x07);
 
     /* SETTERS */
     void setJointSpeed(robotJointId_t id, double speed);
@@ -124,6 +137,12 @@ class LinkbotWrapper {
     void setLEDColor(char *color);
     void setJointPower(robotJointId_t id, double power);
     void setMotorPowers(double p1, double p2, double p3);
+    void setJointMovementStateNB(robotJointId_t id, robotDirection_t dir);
+    void setJointMovementStateTime(robotJointId_t id, robotDirection_t dir, double seconds);
+    void setJointMovementStateTimeNB(robotJointId_t id, robotDirection_t dir, double seconds);
+    void setMovementStateNB(robotDirection_t dir1, robotDirection_t dir2, robotDirection_t dir3);
+    void setMovementStateTime(robotDirection_t dir1, robotDirection_t dir2, robotDirection_t dir3, double seconds);
+    void setMovementStateTimeNB(robotDirection_t dir1, robotDirection_t dir2, robotDirection_t dir3, double seconds);
 
     /* GETTERS */
     void getJointAngle(robotJointId_t id, double &angle);

@@ -56,7 +56,7 @@ LinkbotWrapper * newLinkbotIWrapper(const char * serialId)
 LinkbotWrapper * newLinkbotLWrapper(const char * serialId)
 {
   LinkbotFormFactor type;
-  barobo::CLinkbot * l = new barobo::CLinkbotI(serialId);
+  barobo::CLinkbot * l = new barobo::CLinkbotL(serialId);
 
   if(l == NULL) {
     printf("newLinkbotLWrapper(): null pointer!\n");
@@ -77,7 +77,7 @@ LinkbotJoint linkbotJoint(robotJointId_t id)
   return LinkbotJoint(id);
 }
 
-LinkbotDirection linkbotDirection(linkbot::Direction dir)
+LinkbotDirection linkbotDirection(robotDirection_t dir)
 {
   return LinkbotDirection(dir);
 }
@@ -292,9 +292,9 @@ void LinkbotWrapper::resetToZeroNB()
   callLinkbotFunction(resetToZeroNB);
 }
 
-void LinkbotWrapper::stop()
+void LinkbotWrapper::stop(int mask)
 {
-  callLinkbotFunction(stop);
+  callLinkbotFunction(stop, mask);
 }
 
 void LinkbotWrapper::driveAngle(double angle)
@@ -330,6 +330,55 @@ void LinkbotWrapper::driveTime(double time)
 void LinkbotWrapper::driveTimeNB(double time)
 {
   callLinkbotIOnlyFunction(driveTimeNB, time);
+}
+
+void LinkbotWrapper::driveForward(double angle)
+{
+  driveAngle(angle);
+}
+
+void LinkbotWrapper::driveForwardNB(double angle)
+{
+  driveAngleNB(angle);
+}
+
+void LinkbotWrapper::driveAccelJointTimeNB(double radius, double acceleration, double time)
+{
+  callLinkbotFunction(driveAccelJointTimeNB, radius, acceleration, time);
+}
+void LinkbotWrapper::accelJointAngleNB(robotJointId_t id, double acceleration, double angle)
+{
+  callLinkbotFunction(accelJointAngleNB, linkbotJoint(id), acceleration, angle);
+}
+
+void LinkbotWrapper::accelJointTimeNB(robotJointId_t id, double acceleration, double time)
+{
+  callLinkbotFunction(accelJointTimeNB, linkbotJoint(id), acceleration, time);
+}
+
+void LinkbotWrapper::accelJointToVelocityNB(robotJointId_t id, double acceleration, double speed)
+{
+  callLinkbotFunction(accelJointToVelocityNB, linkbotJoint(id), acceleration, speed);
+}
+
+void LinkbotWrapper::accelJointToMaxSpeedNB(robotJointId_t id, double acceleration)
+{
+  callLinkbotFunction(accelJointToMaxSpeedNB, linkbotJoint(id), acceleration);
+}
+
+void LinkbotWrapper::driveAccelToVelocityNB(double radius, double acceleration, double velocity)
+{
+  callLinkbotFunction(driveAccelToVelocityNB, radius, acceleration, velocity);
+}
+
+void LinkbotWrapper::driveAccelToMaxSpeedNB(double radius, double acceleration)
+{
+  callLinkbotFunction(driveAccelToMaxSpeedNB, radius, acceleration);
+}
+
+void LinkbotWrapper::driveAccelDistanceNB(double radius, double acceleration, double distance)
+{
+  callLinkbotFunction(driveAccelDistanceNB, radius, acceleration, distance);
 }
 
 void LinkbotWrapper::turnLeft(double angle, double radius, double tracklength)
@@ -545,6 +594,36 @@ void LinkbotWrapper::setJointPower(robotJointId_t id, double power)
 void LinkbotWrapper::setMotorPowers(double p1, double p2, double p3)
 {
   callLinkbotFunction(setMotorPowers, p1, p2, p3);
+}
+
+void LinkbotWrapper::setJointMovementStateNB(robotJointId_t id, robotDirection_t dir)
+{
+  callLinkbotFunction(setJointMovementStateNB, linkbotJoint(id), linkbotDirection(dir));
+}
+
+void LinkbotWrapper::setJointMovementStateTime(robotJointId_t id, robotDirection_t dir, double seconds)
+{
+  callLinkbotFunction(setJointMovementStateTime, linkbotJoint(id), linkbotDirection(dir), seconds);
+}
+
+void LinkbotWrapper::setJointMovementStateTimeNB(robotJointId_t id, robotDirection_t dir, double seconds)
+{
+  callLinkbotFunction(setJointMovementStateTimeNB, linkbotJoint(id), linkbotDirection(dir), seconds);
+}
+
+void LinkbotWrapper::setMovementStateNB(robotDirection_t dir1, robotDirection_t dir2, robotDirection_t dir3)
+{
+  callLinkbotFunction(setMovementStateNB, linkbotDirection(dir1), linkbotDirection(dir2), linkbotDirection(dir3));
+}
+
+void LinkbotWrapper::setMovementStateTime(robotDirection_t dir1, robotDirection_t dir2, robotDirection_t dir3, double seconds)
+{
+  callLinkbotFunction(setMovementStateTime, linkbotDirection(dir1), linkbotDirection(dir2), linkbotDirection(dir3), seconds);
+}
+
+void LinkbotWrapper::setMovementStateTimeNB(robotDirection_t dir1, robotDirection_t dir2, robotDirection_t dir3, double seconds)
+{
+  callLinkbotFunction(setMovementStateTimeNB, linkbotDirection(dir1), linkbotDirection(dir2), linkbotDirection(dir3), seconds);
 }
 
 /* GETTERS */
