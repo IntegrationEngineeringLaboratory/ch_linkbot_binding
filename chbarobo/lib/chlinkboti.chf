@@ -713,7 +713,7 @@ void CLinkbotI::traceOn(void)
 	return;
 }
 
-void CLinkbotI::traceColor(char *color)
+void CLinkbotI::traceColor(char *color, int width)
 {
 	printf("Warning: function traceColor() not implemented on hardware robots\n");
 	return;
