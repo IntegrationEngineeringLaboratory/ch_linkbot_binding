@@ -1078,8 +1078,10 @@ void CLinkbotI::recordAngleEnd(int id, int &num) {
 void CLinkbotI::recordAnglesBegin(double* &time, double* &angle1, double* &angle3, double seconds) {
     void *fptr;
     va_list ap;
+    double *ignored = NULL;
     int shiftData = 1;
     int mask;
+
     va_start(ap, seconds);
 
     fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbot_recordAnglesBegin_chdl");
@@ -1088,9 +1090,11 @@ void CLinkbotI::recordAnglesBegin(double* &time, double* &angle1, double* &angle
         return;
     }
 
-    dlrunfun(fptr, NULL, NULL, this, &time, &angle1, &angle3, seconds, shiftData);
+    dlrunfun(fptr, NULL, NULL, this, &time, &angle1, &ignored, &angle3, seconds, shiftData);
 
     va_end(ap);
+
+    if(ignored) free(ignored);
 }
 /*recordAnglesEnd*/
 void CLinkbotI::recordAnglesEnd(int &num) {
