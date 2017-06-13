@@ -216,7 +216,7 @@ class CLinkbotI {
 		void text(double x, double y, double z, char *text);
 		void traceOff(void);
 		void traceOn(void);
-		void traceColor(char *color);
+		void traceColor(char *color, int width);
 
         /* MUSIC Ch-only */
         int playNotes(note_t song[:], double speedFactor);
@@ -367,7 +367,7 @@ class CLinkbotL {
 		void text(double x, double y, double z, char *text);
 		void traceOff(void);
 		void traceOn(void);
-		void traceColor(char *color);
+		void traceColor(char *color, int width);
 
         /* MUSIC Ch-only */
         int playNotes(note_t song[:], double speedFactor);
