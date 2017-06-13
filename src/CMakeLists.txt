@@ -29,6 +29,7 @@ set(SOURCES
     chlinkboti_chdl.cpp
     chlinkbotl_chdl.cpp
     rgbhashtable.c.cpp
+    linkbot_wrapper.cpp
     )
 
 add_library(chlinkbot MODULE ${SOURCES})
@@ -47,6 +48,7 @@ target_include_directories(chlinkbot
             ${CH_ROOT}/extern/include
             /include
     )
+target_include_directories(chlinkbot PRIVATE ${CMAKE_SOURCE_DIR}/c-stem/robotics)
 
 if(WIN32)
     find_library(CHLIB ch PATHS "${CH_ROOT}/extern/lib" NO_DEFAULT_PATH)
@@ -58,6 +60,7 @@ message(STATUS "Found Ch libraries: ${chLibraries}")
 target_link_libraries(chlinkbot
             ${chLibraries}
             linkbot
+            c_stem_robotics
     )
 
 install(TARGETS chlinkbot LIBRARY DESTINATION chbarobo/dl)
