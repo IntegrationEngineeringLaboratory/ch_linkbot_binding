@@ -6,6 +6,9 @@
 
 #include <cmath>
 #include <thread>
+#include <array>
+#include <vector>
+#include <cstring>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -34,6 +37,50 @@
   barobo::CLinkbotI * linkboti = (barobo::CLinkbotI *) _linkbot; \
   linkboti->func(__VA_ARGS__);
 
+typedef struct robotRecord_s {
+  robotRecord_s() :
+    userShiftData(false),
+    userRadius(3.5),
+    userDistOffset(0)
+  {
+  }
+
+  ~robotRecord_s()
+  {
+  }
+
+  void setRobotRecordData(robotJointId_t id, robotRecordData_t &time, robotRecordData_t &angle)
+  {
+    _timeData[(int)id-1] = &time;
+    _angleData[(int)id-1] = &angle;
+  }
+
+  void copyData(std::vector<double> from, robotRecordData_t *to, double shift = 0)
+  {
+    int num = from.size();
+    (*to) = new double[num];
+    std::memset((*to), 0, sizeof(double)*num);
+
+    for(int i=0; i<num; i++) {
+      (*to)[i] = from.at(i) - shift;
+    }
+  }
+
+  void adjustData(robotRecordData_t *data, int num, double (*adjuster)(double))
+  {
+    for(int i=0; i<num; i++) {
+      (*data)[i] = adjuster((*data)[i]);
+    }
+  }
+
+  robotRecordData_t* _angleData[3];
+  robotRecordData_t* _timeData[3];
+
+  bool userShiftData;
+  double userRadius;
+  double userDistOffset;
+} robotRecord_t;
+ 
 LinkbotWrapper * newLinkbotIWrapper(const char * serialId)
 {
   LinkbotFormFactor type;
@@ -147,13 +194,15 @@ void robotPlayNotesImp(LinkbotWrapper *l, int *frequency, double *duration, int 
  * LinkbotWrapper Implementation
  */
 LinkbotWrapper::LinkbotWrapper(barobo::CLinkbot * linkbot)
-: _linkbot(linkbot)
+: _linkbot(linkbot),
+  _record(new robotRecord_t())
 {
 }
 
 LinkbotWrapper::~LinkbotWrapper()
 {
   if(_linkbot) delete _linkbot;
+  if(_record) delete _record;
 }
 
 void LinkbotWrapper::moveForeverNB()
@@ -727,6 +776,102 @@ void LinkbotWrapper::getDistance(double &distance, double radius)
   getJointAngle(linkbot::JOINT_ONE, angle);
   distance = (angle*M_PI/180.0)*radius;
 }
+
+/* RECORDING FUNCTIONS */
+void LinkbotWrapper::recordAngleBegin(
+    robotJointId_t id,
+    robotRecordData_t &time,
+    robotRecordData_t &angle,
+    double seconds)
+{
+  _record->_timeData[(int)id-1] = &time;
+  _record->_angleData[(int)id-1] = &angle;
+
+  callLinkbotFunction(recordAnglesBegin);
+}
+
+void LinkbotWrapper::recordAngleEnd(robotJointId_t id, int &num)
+{
+  int timestamp_index = 2*((int)id-1);
+  int angle_index = timestamp_index + 1;
+
+  auto data = callLinkbotFunction(recordAnglesEnd);
+
+  num = data[angle_index].size();
+  _record->copyData(data[timestamp_index], _record->_timeData[(int)id-1], data[timestamp_index].at(0));
+  _record->copyData(data[angle_index], _record->_angleData[(int)id-1]);
+
+  _record->adjustData(_record->_timeData[(int)id-1], num, [](double value){ return value/1000.0; });
+}
+
+void LinkbotWrapper::recordAnglesBegin(
+    robotRecordData_t &time,
+    robotRecordData_t &angle1,
+    robotRecordData_t &angle2,
+    robotRecordData_t &angle3,
+    double seconds)
+{
+  _record->_timeData[0] = &time;
+  _record->_angleData[0] = &angle1;
+  _record->_angleData[1] = &angle2;
+  _record->_angleData[2] = &angle3;
+
+  callLinkbotFunction(recordAnglesBegin);
+}
+
+void LinkbotWrapper::recordAnglesEnd(int &num)
+{
+  auto data = callLinkbotFunction(recordAnglesEnd);
+
+  num = data[1].size();
+  _record->copyData(data[0], _record->_timeData[0], data[0].at(0));
+  _record->copyData(data[1], _record->_angleData[0]);
+  _record->copyData(data[3], _record->_angleData[1]);
+  _record->copyData(data[5], _record->_angleData[2]);
+
+  _record->adjustData(_record->_timeData[0], num, [](double value){ return value/1000.0; });
+}
+
+void LinkbotWrapper::recordDistanceBegin(
+    robotRecordData_t &time,
+    robotRecordData_t &distance,
+    double radius,
+    double seconds)
+{
+  _record->userRadius = radius;
+  recordAngleBegin((robotJointId_t) 1, time, distance, seconds);
+}
+
+void LinkbotWrapper::recordDistanceEnd(int &num)
+{
+  recordAngleEnd((robotJointId_t) 1, num);
+
+  for(int i=0; i<num; i++) {
+    (*_record->_angleData[0])[i] = (*_record->_angleData[0])[i]/180*M_PI*_record->userRadius;
+  }
+  //_record->adjustData(_record->_angleData[0], num, [this](double value)->double { return value/180*M_PI*(*this)._record->userRadius; });
+}
+
+void LinkbotWrapper::enableRecordDataShift()
+{
+}
+
+void LinkbotWrapper::disableRecordDataShift()
+{
+}
+
+void LinkbotWrapper::recordNoDataShift()
+{
+}
+
+void LinkbotWrapper::recordDistanceOffset(double distance)
+{
+}
+
+void LinkbotWrapper::recordDataShift()
+{
+}
+
 
 /* MISC FUNCTIONS */
 void LinkbotWrapper::delaySeconds(int seconds)

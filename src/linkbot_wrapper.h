@@ -48,6 +48,8 @@ typedef linkbot::JointState robotJointState_t;
 typedef linkbot::Direction robotDirection_t;
 typedef double* robotRecordData_t;
 
+struct robotRecord_s;
+
 namespace cstem {
   class RobotPositionRecorder;
   class RobotAction;
@@ -164,7 +166,30 @@ class LinkbotWrapper {
     void getDistance(double &distance, double radius);
 
     /* RECORDING FUNCTIONS */
-    /* TODO */
+    void recordAngleBegin(
+        robotJointId_t id,
+        robotRecordData_t &time,
+        robotRecordData_t &angle,
+        double seconds);
+    void recordAngleEnd(robotJointId_t id, int &num);
+    void recordAnglesBegin(
+        robotRecordData_t &time,
+        robotRecordData_t &angle1,
+        robotRecordData_t &angle2,
+        robotRecordData_t &angle3,
+        double seconds);
+    void recordAnglesEnd(int &num);
+    void recordDistanceBegin(
+        robotRecordData_t &time,
+        robotRecordData_t &distance,
+        double radius,
+        double seconds);
+    void recordDistanceEnd(int &num);
+    void enableRecordDataShift();
+    void disableRecordDataShift();
+    void recordNoDataShift();
+    void recordDistanceOffset(double distance);
+    void recordDataShift();
 
     /* MISC FUNCTIONS */
     void delaySeconds(int seconds);
@@ -182,6 +207,7 @@ class LinkbotWrapper {
 
   private:
     barobo::CLinkbot * _linkbot;
+    struct robotRecord_s *_record;
     cstem::RobotPositionRecorder * _posRecorder;
     cstem::RobotAction * _drivexyAction;
     cstem::RobotAction * _playNotesAction;
