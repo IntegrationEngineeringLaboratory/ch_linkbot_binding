@@ -55,14 +55,18 @@ typedef struct robotRecord_s {
     _angleData[(int)id-1] = &angle;
   }
 
-  void copyData(std::vector<double> from, robotRecordData_t *to, double shift = 0)
+  void copyData(std::vector<double> from, robotRecordData_t *to, int num, double shift = 0)
   {
-    int num = from.size();
     (*to) = new double[num];
-    std::memset((*to), 0, sizeof(double)*num);
 
-    for(int i=0; i<num; i++) {
+    for(int i=0; i<from.size(); i++) {
       (*to)[i] = from.at(i) - shift;
+    }
+
+    for(int i=from.size(); i<num; i++) {
+      /* if the size of from is not 0, the rest of (*to) will be set to the
+       * last value of from. Otherwise, it will be filled with 0 */
+      (*to)[i] = from.size()>0?from.back():0;
     }
   }
 
@@ -798,8 +802,8 @@ void LinkbotWrapper::recordAngleEnd(robotJointId_t id, int &num)
   auto data = callLinkbotFunction(recordAnglesEnd);
 
   num = data[angle_index].size();
-  _record->copyData(data[timestamp_index], _record->_timeData[(int)id-1], data[timestamp_index].at(0));
-  _record->copyData(data[angle_index], _record->_angleData[(int)id-1]);
+  _record->copyData(data[timestamp_index], _record->_timeData[(int)id-1], num, data[timestamp_index].at(0));
+  _record->copyData(data[angle_index], _record->_angleData[(int)id-1], num);
 
   _record->adjustData(_record->_timeData[(int)id-1], num, [](double value){ return value/1000.0; });
 }
@@ -823,11 +827,23 @@ void LinkbotWrapper::recordAnglesEnd(int &num)
 {
   auto data = callLinkbotFunction(recordAnglesEnd);
 
-  num = data[1].size();
-  _record->copyData(data[0], _record->_timeData[0], data[0].at(0));
-  _record->copyData(data[1], _record->_angleData[0]);
-  _record->copyData(data[3], _record->_angleData[1]);
-  _record->copyData(data[5], _record->_angleData[2]);
+  /* find the index for time data set that has the max points
+   * Since in Ch, the function should return same size of data
+   * for time, angle1, angle2 and angle3. However, the library
+   * records angles asynchronizely so that they have different
+   * sizes. Hence, we need to find the set of data has maximum
+   * number of points and make all data in the same size. The
+   * copy function will fill the extra data points with the
+   * final value. */
+  int index = data[0].size()>data[2].size()?0:2;
+  index = data[4].size()>data[index].size()?4:index;
+
+  num = data[index].size();
+
+  _record->copyData(data[index], _record->_timeData[index], num, data[index].at(0));
+  _record->copyData(data[1], _record->_angleData[0], num);
+  _record->copyData(data[3], _record->_angleData[1], num);
+  _record->copyData(data[5], _record->_angleData[2], num);
 
   _record->adjustData(_record->_timeData[0], num, [](double value){ return value/1000.0; });
 }
