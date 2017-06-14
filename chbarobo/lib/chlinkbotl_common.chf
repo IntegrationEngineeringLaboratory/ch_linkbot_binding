@@ -1109,9 +1109,8 @@ void CLinkbotL::recordAnglesEnd(int &num) {
 
 /*enableRecordDataShift*/
 void CLinkbotL::enableRecordDataShift() {
-    
     DEPRECATED("enableRecordDataShift", "recordDataShift");
-  
+    recordDataShift();
 }
 
 void CLinkbotL::recordDataShift() {
@@ -1127,14 +1126,8 @@ void CLinkbotL::recordDataShift() {
 
 /*disableRecordDataShift*/
 void CLinkbotL::disableRecordDataShift() {
-    void *fptr;
-
-    fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbot_disableRecordDataShift_chdl");
-    if(fptr == NULL) {
-        fprintf(_stderr, "Error: %s(): dlsym(): %s\n", __func__,  dlerror());
-        return;
-    }
-    dlrunfun(fptr, NULL, NULL, this);
+    DEPRECATED("disableRecordDataShift", "recordNoDataShift");
+    recordNoDataShift();
 }
 
 /*recordNoDataShift*/
