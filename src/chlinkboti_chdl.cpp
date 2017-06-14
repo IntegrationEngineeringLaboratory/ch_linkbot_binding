@@ -649,8 +649,6 @@ EXPORTCH void CLinkbotI_recordDistanceEnd_chdl(void *varg) {
 
 /*linkbot recordDistanceOffset*/
 EXPORTCH void CLinkbotI_recordDistanceOffset_chdl(void *varg) {
-  unimplemented();
-#if 0
   ChInterp_t interp;
   ChVaList_t ap;
   class LinkbotWrapper *l;
@@ -663,7 +661,6 @@ EXPORTCH void CLinkbotI_recordDistanceOffset_chdl(void *varg) {
   l->recordDistanceOffset(distance);
   Ch_VaEnd(interp, ap);
   return;
-#endif
 }
 
 /*linkbot playNotes*/

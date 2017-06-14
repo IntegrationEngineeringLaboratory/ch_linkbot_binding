@@ -1540,10 +1540,8 @@ EXPORTCH void CLinkbot_recordDistanceEnd_chdl(void *varg) {
 	return;
 }
 
-/*linkbot enableRecordDataShift*/
-EXPORTCH void CLinkbot_enableRecordDataShift_chdl(void *varg) {
-    unimplemented();
-#if 0
+/*linkbot recordDataShift*/
+EXPORTCH void CLinkbot_recordDataShift_chdl(void *varg) {
 	ChInterp_t interp;
 	ChVaList_t ap;
 	class LinkbotWrapper *l;
@@ -1551,33 +1549,13 @@ EXPORTCH void CLinkbot_enableRecordDataShift_chdl(void *varg) {
 	Ch_VaStart(interp, ap, varg);
 
 	l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
-	l->enableRecordDataShift();
+	l->recordDataShift();
 	Ch_VaEnd(interp, ap);
 	return;
-#endif
-}
-
-/*linkbot disableRecordDataShift*/
-EXPORTCH void CLinkbot_disableRecordDataShift_chdl(void *varg) {
-    unimplemented();
-#if 0
-	ChInterp_t interp;
-	ChVaList_t ap;
-	class LinkbotWrapper *l;
-
-	Ch_VaStart(interp, ap, varg);
-
-	l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
-	l->disableRecordDataShift();
-	Ch_VaEnd(interp, ap);
-	return;
-#endif
 }
 
 /*linkbot recordNoDataShift*/
 EXPORTCH void CLinkbot_recordNoDataShift_chdl(void *varg) {
-    unimplemented();
-#if 0
 	ChInterp_t interp;
 	ChVaList_t ap;
 	class LinkbotWrapper *l;
@@ -1588,7 +1566,6 @@ EXPORTCH void CLinkbot_recordNoDataShift_chdl(void *varg) {
 	l->recordNoDataShift();
 	Ch_VaEnd(interp, ap);
 	return;
-#endif
 }
 
 /*linkbot blinkLED*/
