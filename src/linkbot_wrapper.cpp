@@ -840,7 +840,7 @@ void LinkbotWrapper::recordAnglesEnd(int &num)
 
   num = data[index].size();
 
-  _record->copyData(data[index], _record->_timeData[index], num, data[index].at(0));
+  _record->copyData(data[index], _record->_timeData[0], num, data[index].at(0));
   _record->copyData(data[1], _record->_angleData[0], num);
   _record->copyData(data[3], _record->_angleData[1], num);
   _record->copyData(data[5], _record->_angleData[2], num);
