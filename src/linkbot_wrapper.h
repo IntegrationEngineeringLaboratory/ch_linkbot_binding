@@ -185,11 +185,9 @@ class LinkbotWrapper {
         double radius,
         double seconds);
     void recordDistanceEnd(int &num);
-    void enableRecordDataShift();
-    void disableRecordDataShift();
     void recordNoDataShift();
-    void recordDistanceOffset(double distance);
     void recordDataShift();
+    void recordDistanceOffset(double distance);
 
     /* MISC FUNCTIONS */
     void delaySeconds(int seconds);

@@ -40,8 +40,8 @@
 
 typedef struct robotRecord_s {
   robotRecord_s() :
-    userShiftData(false),
-    userRadius(3.5),
+    userShiftData(true),
+    userRadius(1.75),
     userDistOffset(0)
   {
   }
@@ -797,7 +797,10 @@ void LinkbotWrapper::recordAngleEnd(robotJointId_t id, int &num)
 
   num = data[angle_index].size();
   _record->copyData(data[timestamp_index], _record->_timeData[(int)id-1], num, data[timestamp_index].at(0));
-  _record->copyData(data[angle_index], _record->_angleData[(int)id-1], num);
+  if(data[angle_index].size()) {
+    double dataShift = _record->userShiftData?data[angle_index].at(0):0;
+    _record->copyData(data[angle_index], _record->_angleData[(int)id-1], num, dataShift);
+  }
 
   std::for_each(*_record->_timeData[(int)id-1], *_record->_timeData[(int)id-1]+num, [](double &v) { v = v/1000.0; });
 }
@@ -835,9 +838,14 @@ void LinkbotWrapper::recordAnglesEnd(int &num)
   num = data[index].size();
 
   _record->copyData(data[index], _record->_timeData[index], num, data[index].at(0));
-  _record->copyData(data[1], _record->_angleData[0], num);
-  _record->copyData(data[3], _record->_angleData[1], num);
-  _record->copyData(data[5], _record->_angleData[2], num);
+
+  for(int i=0; i<3; i++) {
+    int j = 2*i+1;
+    if(data[j].size()) {
+      double dataShift = _record->userShiftData?data[j].at(0):0;
+      _record->copyData(data[j], _record->_angleData[i], num, dataShift);
+    }
+  }
 
   std::for_each(*_record->_timeData[0], *_record->_timeData[0]+num, [](double &v) { v = v/1000.0; });
 }
@@ -857,26 +865,22 @@ void LinkbotWrapper::recordDistanceEnd(int &num)
   recordAngleEnd((robotJointId_t) 1, num);
 
   std::for_each(*_record->_angleData[0], *_record->_angleData[0]+num, [this](double &v) { v = v/180*M_PI*(*this)._record->userRadius; });
-}
-
-void LinkbotWrapper::enableRecordDataShift()
-{
-}
-
-void LinkbotWrapper::disableRecordDataShift()
-{
+  std::for_each(*_record->_angleData[0], *_record->_angleData[0]+num, [this](double &v) { v = v+(*this)._record->userDistOffset; });
 }
 
 void LinkbotWrapper::recordNoDataShift()
 {
-}
-
-void LinkbotWrapper::recordDistanceOffset(double distance)
-{
+  _record->userShiftData = false;
 }
 
 void LinkbotWrapper::recordDataShift()
 {
+  _record->userShiftData = true;
+}
+
+void LinkbotWrapper::recordDistanceOffset(double distance)
+{
+  _record->userDistOffset = distance;
 }
 
 
