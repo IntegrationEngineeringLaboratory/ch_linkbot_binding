@@ -436,7 +436,7 @@ void CLinkbotI::recordDistanceEnd(int &num) {
 void CLinkbotI::recordDistanceOffset(double distance) {
     void *fptr;
 
-    fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbot_recordDistanceOffset_chdl");
+    fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbotI_recordDistanceOffset_chdl");
     if(fptr == NULL) {
         fprintf(_stderr, "Error: %s(): dlsym(): %s\n", __func__,  dlerror());
         return;
