@@ -9,6 +9,7 @@
 #include <array>
 #include <vector>
 #include <cstring>
+#include <algorithm>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -67,13 +68,6 @@ typedef struct robotRecord_s {
       /* if the size of from is not 0, the rest of (*to) will be set to the
        * last value of from. Otherwise, it will be filled with 0 */
       (*to)[i] = from.size()>0?from.back():0;
-    }
-  }
-
-  void adjustData(robotRecordData_t *data, int num, double (*adjuster)(double))
-  {
-    for(int i=0; i<num; i++) {
-      (*data)[i] = adjuster((*data)[i]);
     }
   }
 
@@ -805,7 +799,7 @@ void LinkbotWrapper::recordAngleEnd(robotJointId_t id, int &num)
   _record->copyData(data[timestamp_index], _record->_timeData[(int)id-1], num, data[timestamp_index].at(0));
   _record->copyData(data[angle_index], _record->_angleData[(int)id-1], num);
 
-  _record->adjustData(_record->_timeData[(int)id-1], num, [](double value){ return value/1000.0; });
+  std::for_each(*_record->_timeData[(int)id-1], *_record->_timeData[(int)id-1]+num, [](double &v) { v = v/1000.0; });
 }
 
 void LinkbotWrapper::recordAnglesBegin(
@@ -840,12 +834,12 @@ void LinkbotWrapper::recordAnglesEnd(int &num)
 
   num = data[index].size();
 
-  _record->copyData(data[index], _record->_timeData[0], num, data[index].at(0));
+  _record->copyData(data[index], _record->_timeData[index], num, data[index].at(0));
   _record->copyData(data[1], _record->_angleData[0], num);
   _record->copyData(data[3], _record->_angleData[1], num);
   _record->copyData(data[5], _record->_angleData[2], num);
 
-  _record->adjustData(_record->_timeData[0], num, [](double value){ return value/1000.0; });
+  std::for_each(*_record->_timeData[0], *_record->_timeData[0]+num, [](double &v) { v = v/1000.0; });
 }
 
 void LinkbotWrapper::recordDistanceBegin(
@@ -862,10 +856,7 @@ void LinkbotWrapper::recordDistanceEnd(int &num)
 {
   recordAngleEnd((robotJointId_t) 1, num);
 
-  for(int i=0; i<num; i++) {
-    (*_record->_angleData[0])[i] = (*_record->_angleData[0])[i]/180*M_PI*_record->userRadius;
-  }
-  //_record->adjustData(_record->_angleData[0], num, [this](double value)->double { return value/180*M_PI*(*this)._record->userRadius; });
+  std::for_each(*_record->_angleData[0], *_record->_angleData[0]+num, [this](double &v) { v = v/180*M_PI*(*this)._record->userRadius; });
 }
 
 void LinkbotWrapper::enableRecordDataShift()
