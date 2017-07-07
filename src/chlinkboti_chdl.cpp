@@ -480,10 +480,7 @@ EXPORTCH void CLinkbotI_drivexy_chdl(void *varg) {
   radius=Ch_VaArg(interp, ap, double);
   trackwidth=Ch_VaArg(interp, ap, double);
   nb = Ch_VaArg(interp, ap, bool);
-  unimplemented();
-#if 0
   l->drivexy(x, y, radius, trackwidth, nb);
-#endif
   Ch_VaEnd(interp, ap);
 
   return;
@@ -505,10 +502,7 @@ EXPORTCH void CLinkbotI_drivexyTo_chdl(void *varg) {
   radius=Ch_VaArg(interp, ap, double);
   trackwidth=Ch_VaArg(interp, ap, double);
   nb = Ch_VaArg(interp, ap, int);
-  unimplemented();
-#if 0
   l->drivexyTo(x, y, radius, trackwidth, nb);
-#endif
   Ch_VaEnd(interp, ap);
 
   return;
@@ -530,10 +524,7 @@ EXPORTCH void CLinkbotI_drivexyToArray_chdl(void *varg) {
   radius = Ch_VaArg(interp, ap, double);
   trackwidth = Ch_VaArg(interp, ap, double);
   nb = Ch_VaArg(interp, ap, int);
-  unimplemented();
-#if 0
   l->drivexyToArray(px, py, num, radius, trackwidth, nb);
-#endif
   Ch_VaEnd(interp, ap);
 
   return;
@@ -547,10 +538,7 @@ EXPORTCH void CLinkbotI_drivexyWait_chdl(void *varg) {
 
   Ch_VaStart(interp, ap, varg);
   l = Ch_VaArg(interp, ap, class LinkbotWrapper *);
-  unimplemented();
-#if 0
   l->drivexyWait();
-#endif
   Ch_VaEnd(interp, ap);
 
   return;
@@ -717,10 +705,7 @@ EXPORTCH void CLinkbotI_initPosition_chdl(void *varg) {
   x=Ch_VaArg(interp, ap, double);
   y=Ch_VaArg(interp, ap, double);
   angle=Ch_VaArg(interp, ap, double);
-  unimplemented();
-#if 0
   l->initPosition(x, y, angle);
-#endif
   Ch_VaEnd(interp, ap);
   return;
 }
