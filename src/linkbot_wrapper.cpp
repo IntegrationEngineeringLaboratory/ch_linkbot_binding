@@ -193,7 +193,10 @@ void robotPlayNotesImp(LinkbotWrapper *l, int *frequency, double *duration, int 
  */
 LinkbotWrapper::LinkbotWrapper(barobo::CLinkbot * linkbot)
 : _linkbot(linkbot),
-  _record(new robotRecord_t())
+  _record(new robotRecord_t()),
+  _posRecorder(new cstem::RobotPositionRecorder()),
+  _drivexyAction(new cstem::RobotAction()),
+  _playNotesAction(new cstem::RobotAction())
 {
 }
 
