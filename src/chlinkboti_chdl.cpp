@@ -723,10 +723,7 @@ EXPORTCH void CLinkbotI_getPosition_chdl(void *varg) {
   x=Ch_VaArg(interp, ap, double *);
   y=Ch_VaArg(interp, ap, double *);
   angle=Ch_VaArg(interp, ap, double *);
-  unimplemented();
-#if 0
   l->getPosition(*x, *y, *angle);
-#endif
   Ch_VaEnd(interp, ap);
   return;
 }
@@ -743,10 +740,7 @@ EXPORTCH void CLinkbotI_getxy_chdl(void *varg) {
   l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
   x=Ch_VaArg(interp, ap, double *);
   y=Ch_VaArg(interp, ap, double *);
-  unimplemented();
-#if 0
   l->getxy(*x, *y);
-#endif
   Ch_VaEnd(interp, ap);
   return;
 }
