@@ -506,6 +506,11 @@ void LinkbotWrapper::drivexyTo(
     double trackwidth, 
     bool NB)
 {
+  double _x, _y;
+  getxy(_x, _y);
+
+  if(x == _x && y == _y) return;
+
   if(NB) {
     _drivexyAction->start();
     std::thread driveThread(robotDrivexyToImp, this, x, y, radius, trackwidth, _drivexyAction);
