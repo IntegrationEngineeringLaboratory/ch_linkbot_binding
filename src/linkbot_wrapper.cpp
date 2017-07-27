@@ -350,21 +350,37 @@ void LinkbotWrapper::stop(int mask)
 void LinkbotWrapper::driveAngle(double angle)
 {
   callLinkbotIOnlyFunction(driveAngle, angle);
+
+  double speed;
+  getJointSpeed(linkbot::JOINT_ONE, speed);
+  _posRecorder->updatePosByAngle(angle, speed, 1.75);
 }
 
 void LinkbotWrapper::driveAngleNB(double angle)
 {
   callLinkbotIOnlyFunction(driveAngleNB, angle);
+
+  double speed;
+  getJointSpeed(linkbot::JOINT_ONE, speed);
+  _posRecorder->updatePosByAngle(angle, speed, 1.75);
 }
 
 void LinkbotWrapper::driveDistance(double distance, double radius)
 {
   callLinkbotIOnlyFunction(driveDistance, distance, radius);
+
+  double speed;
+  getJointSpeed(linkbot::JOINT_ONE, speed);
+  _posRecorder->updatePosByDist(distance, speed);
 }
 
 void LinkbotWrapper::driveDistanceNB(double distance, double radius)
 {
   callLinkbotIOnlyFunction(driveDistanceNB, distance, radius);
+
+  double speed;
+  getJointSpeed(linkbot::JOINT_ONE, speed);
+  _posRecorder->updatePosByDist(distance, speed);
 }
 
 void LinkbotWrapper::driveForeverNB()
@@ -375,11 +391,19 @@ void LinkbotWrapper::driveForeverNB()
 void LinkbotWrapper::driveTime(double time)
 {
   callLinkbotIOnlyFunction(driveTime, time);
+
+  double speed;
+  getJointSpeed(linkbot::JOINT_ONE, speed);
+  _posRecorder->updatePosByTime(time, speed, 1.75);
 }
 
 void LinkbotWrapper::driveTimeNB(double time)
 {
   callLinkbotIOnlyFunction(driveTimeNB, time);
+
+  double speed;
+  getJointSpeed(linkbot::JOINT_ONE, speed);
+  _posRecorder->updatePosByTime(time, speed, 1.75);
 }
 
 void LinkbotWrapper::driveForward(double angle)
@@ -434,21 +458,29 @@ void LinkbotWrapper::driveAccelDistanceNB(double radius, double acceleration, do
 void LinkbotWrapper::turnLeft(double angle, double radius, double tracklength)
 {
   callLinkbotIOnlyFunction(turnLeft, angle, radius, tracklength);
+
+  _posRecorder->updateAngle(angle);
 }
 
 void LinkbotWrapper::turnLeftNB(double angle, double radius, double tracklength)
 {
   callLinkbotIOnlyFunction(turnLeftNB, angle, radius, tracklength);
+
+  _posRecorder->updateAngle(angle);
 }
 
 void LinkbotWrapper::turnRight(double angle, double radius, double tracklength)
 {
   callLinkbotIOnlyFunction(turnRight, angle, radius, tracklength);
+
+  _posRecorder->updateAngle(-angle);
 }
 
 void LinkbotWrapper::turnRightNB(double angle, double radius, double tracklength)
 {
   callLinkbotIOnlyFunction(turnRightNB, angle, radius, tracklength);
+
+  _posRecorder->updateAngle(-angle);
 }
 
 void LinkbotWrapper::openGripper(double angle)
