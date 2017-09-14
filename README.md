@@ -58,7 +58,7 @@ terminal.
 
 ### Download and install the new Ch Linkbot binding
 
-    https://github.com/IntegrationEngineeringLaboratory/ch_linkbot_binding/releases/download/v2.0.0/chbarobo-2.0.0-Mac-Intel.zip
+    curl -L https://github.com/IntegrationEngineeringLaboratory/ch_linkbot_binding/releases/download/v2.0.0/chbarobo-2.0.0-Mac-Intel.zip > chbarobo-2.0.0-Mac-Intel.zip
     unzip chbarobo-2.0.0-Mac-Intel.zip
     cd chbarobo-2.0.0-Mac-Intel
     sudo ch pkginstall.ch chbarobo
