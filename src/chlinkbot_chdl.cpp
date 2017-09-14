@@ -5,6 +5,11 @@
 #include<functional>
 #include "linkbot_wrapper.h"
 
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 #define unimplemented() \
 fprintf(stderr, "Function %s is currently unimplemented.\n", __func__); \
 exit(-1)
