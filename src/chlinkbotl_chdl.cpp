@@ -23,9 +23,12 @@ EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
     char path[256];
 
 #ifdef __MACH__
+/*
     FSRef ref;
     FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
     FSRefMakePath(&ref, (UInt8*) &path, pathMax);
+    */
+    strcpy(path, getenv("HOME"));
     strcat(path, "/C-STEM Studio/LinkbotController/linkbot_ids");
 
 #elif defined(__linux__) // specify the path of configure file to path varaible

@@ -22,7 +22,7 @@ set(WRAPPER_SOURCES
     rgbhashtable.c.cpp
     )
 
-find_library(LINKBOT linkbot PATHS /lib)
+find_library(LINKBOT linkbot PATHS /lib /usr/local/lib ~/.local/lib)
 
 set(SOURCES
     chlinkbot_chdl.cpp
@@ -46,7 +46,7 @@ endif()
 target_include_directories(chlinkbot
     PRIVATE
             ${CH_ROOT}/extern/include
-            /include
+            /usr/local/include
     )
 target_include_directories(chlinkbot PRIVATE ${CMAKE_SOURCE_DIR}/c-stem/robotics)
 
@@ -59,7 +59,7 @@ message(STATUS "Found Ch libraries: ${chLibraries}")
 
 target_link_libraries(chlinkbot
             ${chLibraries}
-            linkbot
+            ${LINKBOT}
             c_stem_robotics
     )
 
