@@ -5,6 +5,8 @@ binding for the latest and greatest Daemon/Library/Firmware Linkbot ecosystem.
 
 ## 1. Update your Linkbot Hub
 
+The following command should all be executed on your Linkbot-Hub.
+
 First, you will have to point your Linkbot-Hub to the development repositories.
 Attach a monitor/keyboard/mouse to your Linkbot Hub, open a terminal, and issue
 the following command to begin editing the repository sources file:
@@ -45,6 +47,9 @@ To flash robots, turn the robot off, connect it to the Linkbot-Hub, and then
 turn the robot back on.
 
 ## 3. Configure your Mac(s)
+
+The following commands should all be executed on your Mac computers in a
+terminal.
 
 ### Download and install `liblinkbot2`
 
