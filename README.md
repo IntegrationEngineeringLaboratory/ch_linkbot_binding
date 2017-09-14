@@ -1,11 +1,9 @@
-ch_linkbot_binding version 2.x ALPHA
-====================================
+# ch_linkbot_binding version 2.x ALPHA
 
 This document describes how to set up the latest and greatest Ch Linkbot
 binding for the latest and greatest Daemon/Library/Firmware Linkbot ecosystem.
 
-1. Update your Linkbot Hub
---------------------------
+## 1. Update your Linkbot Hub
 
 First, you will have to point your Linkbot-Hub to the development repositories.
 Attach a monitor/keyboard/mouse to your Linkbot Hub, open a terminal, and issue
@@ -37,8 +35,7 @@ Next, update the daemon and firmware
     sudo apt update
     sudo apt install linkbotd linkbot-firmware
 
-2. Reflash your hardware
-------------------------
+## 2. Reflash your hardware
 
 You will need to reflash any hub and robots you wish to control with the new firmware. 
 
@@ -47,8 +44,7 @@ To flash the dongles, simply unplug them and then plug them back in.
 To flash robots, turn the robot off, connect it to the Linkbot-Hub, and then
 turn the robot back on.
 
-3. Configure your Mac(s)
-------------------------
+## 3. Configure your Mac(s)
 
 ### Download and install `liblinkbot2`
 
@@ -62,8 +58,7 @@ turn the robot back on.
     cd chbarobo-2.0.0-Mac-Intel
     sudo ch pkginstall.ch chbarobo
 
-4. Set an environment variable to point to your local Linkbot-Hub
------------------------------------------------------------------
+## 4. Set an environment variable to point to your local Linkbot-Hub
 
     export LINKBOT_DAEMON_HOSTPORT=linkbot-hub-aabbcc.local:42001
 
@@ -71,8 +66,7 @@ The text "linkbot-hub-aabbcc.local" can be replaced with an IP address. The new
 daemon uses port 42001 by default while it is in alpha and beta testing, but
 will eventually move to port 42000 to replace the old daemon.
 
-4. Test the new binding!
-------------------------
+## 5. Test the new binding!
 
 Create a file "test.ch" with the contents 
 
