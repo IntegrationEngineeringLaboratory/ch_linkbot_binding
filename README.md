@@ -67,9 +67,11 @@ terminal.
 
     export LINKBOT_DAEMON_HOSTPORT=linkbot-hub-aabbcc.local:42001
 
-The text "linkbot-hub-aabbcc.local" can be replaced with an IP address. The new
-daemon uses port 42001 by default while it is in alpha and beta testing, but
-will eventually move to port 42000 to replace the old daemon.
+You should replace the text "aabbcc" with your Linkbot-Hub's 6-digit
+identifier. Or, the whole text "linkbot-hub-aabbcc.local" can be replaced with
+an IP address. The new daemon uses port 42001 by default while it is in alpha
+and beta testing, but will eventually move to port 42000 to replace the old
+daemon.
 
 ## 5. Test the new binding!
 
