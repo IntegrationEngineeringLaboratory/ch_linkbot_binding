@@ -41,9 +41,9 @@ Next, update the daemon and firmware
 
 You will need to reflash any hub and robots you wish to control with the new firmware. 
 
-To flash the dongles, simply unplug them and then plug them back in.
+To flash the dongles, simply unplug them from the Linkbot-Hub and then plug them back in.
 
-To flash robots, turn the robot off, connect it to the Linkbot-Hub, and then
+To flash robots, turn the robot off, connect it to the Linkbot-Hub with a micro-USB cable, and then
 turn the robot back on.
 
 ## 3. Configure your Mac(s)
