@@ -11,7 +11,7 @@ First, you will have to point your Linkbot-Hub to the development repositories.
 Attach a monitor/keyboard/mouse to your Linkbot Hub, open a terminal, and issue
 the following command to begin editing the repository sources file:
 
-    gedit /etc/apt/sources.list
+    sudo nano /etc/apt/sources.list
 
 The original file should look something like this:
 
@@ -37,9 +37,9 @@ Next, update the daemon and firmware
     sudo apt update
     sudo apt install linkbotd linkbot-firmware
 
-## 2. Reflash your hardware
+## 2. Reflash your Robots and Z-Link dongles
 
-You will need to reflash any hub and robots you wish to control with the new firmware. 
+You will need to reflash any Z-Link dongles (those black things attached to your Linkbot-Hub) and robots you wish to control with the new firmware. 
 
 To flash the dongles, simply unplug them from the Linkbot-Hub and then plug them back in.
 
