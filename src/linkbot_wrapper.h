@@ -203,6 +203,8 @@ class LinkbotWrapper {
     void getPosition(double &x, double &y, double &angle);
     void getxy(double &x, double &y);
 
+    barobo::CLinkbot* __inner() { return _linkbot; }
+
   private:
     barobo::CLinkbot * _linkbot;
     struct robotRecord_s *_record;

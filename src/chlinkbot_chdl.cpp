@@ -1602,13 +1602,13 @@ EXPORTCH void CLinkbotGroup_addRobot_chdl(void *varg) {
     ChInterp_t interp;
     ChVaList_t ap;
     barobo::CLinkbotGroup *g;
-    class barobo::CLinkbot *l;
+    class LinkbotWrapper *l;
 
     Ch_VaStart(interp, ap, varg);
    
     g=Ch_VaArg(interp, ap, barobo::CLinkbotGroup *);
-	l=Ch_VaArg(interp, ap, class barobo::CLinkbot *);
-    g->addRobot(*l);
+	l=Ch_VaArg(interp, ap, class LinkbotWrapper *);
+    g->addRobot(*l->__inner());
     Ch_VaEnd(interp, ap);
 }
 
@@ -1617,17 +1617,17 @@ EXPORTCH void CLinkbotGroup_addRobots_chdl(void *varg) {
     ChInterp_t interp;
     ChVaList_t ap;
     barobo::CLinkbotGroup *g;
-    class barobo::CLinkbot *robots;
+    class LinkbotWrapper *robots;
 	int numRobots;
 
     Ch_VaStart(interp, ap, varg);
    
     g=Ch_VaArg(interp, ap, barobo::CLinkbotGroup *);
-	robots=Ch_VaArg(interp, ap, class barobo::CLinkbot *);
+	robots=Ch_VaArg(interp, ap, class LinkbotWrapper *);
 	numRobots=Ch_VaArg(interp, ap, int);
     //g->addRobots(robots, numRobots);
     for(auto i = 0; i < numRobots; i++) {
-        g->addRobot(robots[i]);
+        g->addRobot(*robots[i].__inner());
     }
     Ch_VaEnd(interp, ap);
 }
