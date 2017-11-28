@@ -775,7 +775,7 @@ EXPORTCH void CLinkbot_getJointAngle_chdl(void *varg) {
     ChVaList_t ap;
     class LinkbotWrapper *l;
     double *angle;
-robotJointId_t id;
+    robotJointId_t id;
 
 
     Ch_VaStart(interp, ap, varg);

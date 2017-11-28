@@ -547,7 +547,7 @@ void CLinkbotI::getBatteryVoltage(double &voltage) {
 /*getJointAngle*/
 void CLinkbotI::getJointAngle(robotJointId_t id, double &angle) {
     void *fptr;
-    id--;
+    //id--;
   
     fptr = dlsym(g_chlinkbot_dlhandle, "CLinkbot_getJointAngle_chdl");
     if (fptr == NULL) {
