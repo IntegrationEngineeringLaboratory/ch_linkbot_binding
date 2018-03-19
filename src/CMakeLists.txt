@@ -22,7 +22,7 @@ set(WRAPPER_SOURCES
     rgbhashtable.c.cpp
     )
 
-find_library(LINKBOT linkbot PATHS /lib /usr/local/lib $ENV{HOME}/.local ) 
+# find_library(LINKBOT linkbot PATHS /lib /usr/local/lib $ENV{HOME}/.local ) 
 
 set(SOURCES
     chlinkbot_chdl.cpp
@@ -59,7 +59,7 @@ message(STATUS "Found Ch libraries: ${chLibraries}")
 
 target_link_libraries(chlinkbot
             ${chLibraries}
-            ${LINKBOT}
+            linkbot
             c_stem_robotics
     )
 

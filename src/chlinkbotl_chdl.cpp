@@ -5,6 +5,11 @@
 #include<functional>
 #include "linkbot_wrapper.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#include <Shlobj.h>
+#endif
+
 #define unimplemented() \
 fprintf(stderr, "Function %s is currently unimplemented.\n", __func__); \
 exit(-1)
@@ -38,7 +43,7 @@ EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
 #elif defined(_WIN32)
     if (SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, path) != S_OK) {
       fprintf(stderr, "Could not find AppData directory!\n");
-      return NULL;
+      return;
     }
     strcat(path, "\\C-STEM Studio\\LinkbotController\\linkbot_ids");
 #endif

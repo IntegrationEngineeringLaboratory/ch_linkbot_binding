@@ -8,6 +8,13 @@ if(CMAKE_CROSSCOMPILING)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_CROSSCOMPILE_C_FLAGS} -static-libstdc++ -static-libgcc")
 endif(CMAKE_CROSSCOMPILING)
 
+# Configure liblinkbot2 first
+execute_process(
+	COMMAND ${CMAKE_COMMAND} --build ${CMAKE_SOURCE_DIR}/deps/liblinkbot2
+	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/deps/liblinkbot2
+)
+
+add_subdirectory(deps/liblinkbot2)
 add_subdirectory(c-stem/robotics)
 add_subdirectory(src)
 add_subdirectory(test)

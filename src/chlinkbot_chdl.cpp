@@ -10,6 +10,10 @@
 #include <mach/mach.h>
 #endif
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #define unimplemented() \
 fprintf(stderr, "Function %s is currently unimplemented.\n", __func__); \
 exit(-1)
