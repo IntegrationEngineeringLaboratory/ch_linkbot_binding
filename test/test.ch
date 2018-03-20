@@ -20,7 +20,7 @@ angle =20;
 //robot.connect();
 robot.resetToZero();
 
-robot.blinkLED(0.1, 5);
+//robot.blinkLED(0.1, 5);
 robot.recordNoDataShift();
 robot.enableRecordDataShift();
 robot.recordDistanceBegin(
