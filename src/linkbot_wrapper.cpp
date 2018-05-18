@@ -82,7 +82,11 @@ typedef struct robotRecord_s {
 LinkbotWrapper * newLinkbotIWrapper(const char * serialId)
 {
   LinkbotFormFactor type;
-  barobo::CLinkbot * l = new barobo::CLinkbotI(serialId);
+  barobo::CLinkbot *l;
+  if(serialId)
+      l = new barobo::CLinkbotI(serialId);
+  else
+      l = new barobo::CLinkbotI();
 
   if(l == NULL) {
     printf("newLinkbotIWrapper(): null pointer!\n");
@@ -101,7 +105,11 @@ LinkbotWrapper * newLinkbotIWrapper(const char * serialId)
 LinkbotWrapper * newLinkbotLWrapper(const char * serialId)
 {
   LinkbotFormFactor type;
-  barobo::CLinkbot * l = new barobo::CLinkbotL(serialId);
+  barobo::CLinkbot *l;
+  if (serialId)
+      l = new barobo::CLinkbotL(serialId);
+  else
+      l = new barobo::CLinkbotL();
 
   if(l == NULL) {
     printf("newLinkbotLWrapper(): null pointer!\n");

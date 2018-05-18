@@ -4,7 +4,9 @@
 #include <linkbot.h>
 #include <chplot.h>
 
-CLinkbotI robot=CLinkbotI("ZRG6");
+printf("Connecting...\n");
+CLinkbotI robot=CLinkbotI();
+printf("Connecting...done\n");
 //CLinkbotI robot;
 double speed = 45;         // speed in 45 degrees/seconds 
 double timeInterval = 0.1; // time interval in 0.1 second 
@@ -23,14 +25,17 @@ robot.resetToZero();
 //robot.blinkLED(0.1, 5);
 robot.recordNoDataShift();
 robot.enableRecordDataShift();
+/*
 robot.recordDistanceBegin(
     timedata,
     angledata,
     radius,
     0.1);
+    */
 //sleep(2);
 robot.move(90, 90, 90);
 
+/*
 robot.recordDistanceEnd(numDataPoints);
 
 
@@ -43,4 +48,4 @@ plot.plotting();
     
 
 
-
+*/

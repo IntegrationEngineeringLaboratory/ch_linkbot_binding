@@ -25,48 +25,8 @@ EXPORTCH void CLinkbotL_CLinkbotL_chdl(void *varg) {
     
     Ch_VaStart(interp, ap, varg);
 	if (Ch_VaCount(interp, ap) == 0){
-    char path[256];
-
-#ifdef __MACH__
-/*
-    FSRef ref;
-    FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
-    FSRefMakePath(&ref, (UInt8*) &path, pathMax);
-    */
-    strcpy(path, getenv("HOME"));
-    strcat(path, "/C-STEM Studio/LinkbotController/linkbot_ids");
-
-#elif defined(__linux__) // specify the path of configure file to path varaible
-    strcpy(path, getenv("HOME"));
-    strcat(path, "/.config/C-STEMStudio/LinkbotController/linkbot_ids");
-
-#elif defined(_WIN32)
-    if (SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, path) != S_OK) {
-      fprintf(stderr, "Could not find AppData directory!\n");
-      return;
-    }
-    strcat(path, "\\C-STEM Studio\\LinkbotController\\linkbot_ids");
-#endif
-
-    FILE *fp = fopen(path, "r");
-    if(fp == NULL) {
-      fprintf(stderr, "Fail to open file for robot ids!\n");
-      exit(-1);
-    }
-
-    int i=0;
-    char id[5];
-    while(i<=linkbot_count) {
-      if(fscanf(fp, "%s", id) < 0) {
-        fprintf(stderr, "Not enough robot found in the configuration file!\n");
-        exit(-1);
-      }
-      i++;
-    };
-    fclose(fp);
-		l = newLinkbotLWrapper(id);
+		l = newLinkbotLWrapper(nullptr);
 		Ch_CppChangeThisPointer(interp, l, sizeof(LinkbotWrapper));
-    linkbot_count++;
 	}
 	else if (Ch_VaCount(interp, ap) == 1){
 		serialId = Ch_VaArg(interp, ap, const char *);
