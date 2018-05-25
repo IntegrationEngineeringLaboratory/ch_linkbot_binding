@@ -6,6 +6,7 @@
 
 printf("Connecting...\n");
 CLinkbotI robot=CLinkbotI();
+CLinkbotL robot2 = CLinkbotL();
 printf("Connecting...done\n");
 //CLinkbotI robot;
 double speed = 45;         // speed in 45 degrees/seconds 
@@ -23,9 +24,9 @@ angle =20;
 robot.resetToZero();
 
 //robot.blinkLED(0.1, 5);
+/*
 robot.recordNoDataShift();
 robot.enableRecordDataShift();
-/*
 robot.recordDistanceBegin(
     timedata,
     angledata,
@@ -34,6 +35,7 @@ robot.recordDistanceBegin(
     */
 //sleep(2);
 robot.move(90, 90, 90);
+robot2.move(90, 90, 90);
 
 /*
 robot.recordDistanceEnd(numDataPoints);
