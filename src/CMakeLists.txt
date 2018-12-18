@@ -48,7 +48,7 @@ target_include_directories(chlinkbot
             ${CH_ROOT}/extern/include
             /usr/local/include
     )
-target_include_directories(chlinkbot PRIVATE ${CMAKE_SOURCE_DIR}/c-stem/robotics)
+target_include_directories(chlinkbot PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../c-stem/robotics)
 
 if(WIN32)
     find_library(CHLIB ch PATHS "${CH_ROOT}/extern/lib" NO_DEFAULT_PATH)
