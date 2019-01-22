@@ -21,7 +21,6 @@ typedef double* robotRecordData_t;
 #ifndef ROBOT_JOINTS_E
 #define ROBOT_JOINTS_E
 typedef enum robotJoints_e {
-  ROBOT_ZERO,
   JOINT1,
   JOINT2,
   JOINT3,

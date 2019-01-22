@@ -731,7 +731,7 @@ void LinkbotWrapper::getJointAngle(robotJointId_t id, double &angle)
   for (int i=0; i<numReadings; i++)
   {
     getJointAnglesInstant(angles[0], angles[1], angles[2]);
-    angle += angles[int(id)-1];
+    angle += angles[int(id)];
   }
   angle = angle/numReadings;
 }
