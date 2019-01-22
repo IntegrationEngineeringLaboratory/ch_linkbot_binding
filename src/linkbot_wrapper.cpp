@@ -830,27 +830,27 @@ void LinkbotWrapper::recordAngleBegin(
     robotRecordData_t &angle,
     double seconds)
 {
-  _record->_timeData[(int)id-1] = &time;
-  _record->_angleData[(int)id-1] = &angle;
+  _record->_timeData[(int)id] = &time;
+  _record->_angleData[(int)id] = &angle;
 
   callLinkbotFunction(recordAnglesBegin);
 }
 
 void LinkbotWrapper::recordAngleEnd(robotJointId_t id, int &num)
 {
-  int timestamp_index = 2*((int)id-1);
+  int timestamp_index = 2*((int)id);
   int angle_index = timestamp_index + 1;
 
   auto data = callLinkbotFunction(recordAnglesEnd);
 
   num = data[angle_index].size();
-  _record->copyData(data[timestamp_index], _record->_timeData[(int)id-1], num, data[timestamp_index].at(0));
+  _record->copyData(data[timestamp_index], _record->_timeData[(int)id], num, data[timestamp_index].at(0));
   if(data[angle_index].size()) {
     double dataShift = _record->userShiftData?data[angle_index].at(0):0;
-    _record->copyData(data[angle_index], _record->_angleData[(int)id-1], num, dataShift);
+    _record->copyData(data[angle_index], _record->_angleData[(int)id], num, dataShift);
   }
 
-  std::for_each(*_record->_timeData[(int)id-1], *_record->_timeData[(int)id-1]+num, [](double &v) { v = v/1000.0; });
+  std::for_each(*_record->_timeData[(int)id], *_record->_timeData[(int)id]+num, [](double &v) { v = v/1000.0; });
 }
 
 void LinkbotWrapper::recordAnglesBegin(
@@ -905,15 +905,16 @@ void LinkbotWrapper::recordDistanceBegin(
     double seconds)
 {
   _record->userRadius = radius;
-  recordAngleBegin((robotJointId_t) 1, time, distance, seconds);
+  recordAngleBegin(linkbot::JOINT_ONE, time, distance, seconds);
 }
 
 void LinkbotWrapper::recordDistanceEnd(int &num)
 {
-  recordAngleEnd((robotJointId_t) 1, num);
+  recordAngleEnd(linkbot::JOINT_ONE, num);
 
-  std::for_each(*_record->_angleData[0], *_record->_angleData[0]+num, [this](double &v) { v = v/180*M_PI*(*this)._record->userRadius; });
-  std::for_each(*_record->_angleData[0], *_record->_angleData[0]+num, [this](double &v) { v = v+(*this)._record->userDistOffset; });
+  int index = (int)linkbot::JOINT_ONE;
+  std::for_each(*_record->_angleData[index], *_record->_angleData[index]+num, [this](double &v) { v = v/180*M_PI*(*this)._record->userRadius; });
+  std::for_each(*_record->_angleData[index], *_record->_angleData[index]+num, [this](double &v) { v = v+(*this)._record->userDistOffset; });
 }
 
 void LinkbotWrapper::recordNoDataShift()
